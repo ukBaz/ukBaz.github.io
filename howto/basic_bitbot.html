@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="howto.css">
+    <meta charset="UTF-8">
+    <title>Basic Bluetooth bit:bot</title>
+</head>
+<body>
+<div>
+    <h1>Basic Bluetooth bit:bot</h1>
+</div>
+
+<div>
+    <h2>Overview</h2>
+    <p>
+        Rather than programming the micro:bit on the bit:bot I decided to use the
+        <a href="https://lancaster-university.github.io/microbit-docs/ble/profile/#gatt-services">Bluetooth</a> profile for the micro:bit
+        to control the pins remotely from a Raspberry Pi.
+        I did a little video demo of it at:<br>
+        <iframe width="420" height="315" src="https://youtu.be/Fo4G0_cGMNk"></iframe>
+    </p>
+</div>
+<div>
+    <h2>Equipment</h2>
+    <p>
+        <ul>
+    <li><a href="http://4tronix.co.uk/blog/?p=1490">bit:bot</a>Learn how to program the bit:bot without using Bluetooth</li>
+    <li><a href="http://4tronix.co.uk/store/index.php?rt=product/product&product_id=588">bit:bot</a>More information on the bit:bot</li>
+    <li><a href="https://shop.pimoroni.com/products/raspberry-pi-3">Pi 3</a>Any Linux board should work although I used one of these</li>
+    </ul>
+    </p>
+</div>
+<div>
+    <h2>Setting Up The micro:bit</h2>
+    <p>Thanks to bitty software this is very easy as they have done a hex file for the micro:bit that exposes
+    all of the Bluetooth services we need. This was created for their micro:bit blue app (you should check the app out as it is very good).
+        You can download the hex file from their <a href="http://www.bittysoftware.com/downloads.html">webiste</a>. You will need to look for
+        "Main Bluetooth services, pairing not required" link for the download. The loading of the hex file is standard for the micro:bot.
+    </p>
+    <p>
+        First time you start the micro:bit with this hex file it will get you to draw a circle. This is to calibrate the magnetometer.
+        One that is done you are done on the micro:bit.
+    </p>
+    <h2>Setting Up the Raspberry Pi</h2>
+    <p>
+        This is a little bit more involved as you will require a newer version of BlueZ (the Linux Bluetooth stack) than comes
+        as default with the Raspberry Pi. The full
+        <a href="https://github.com/ukBaz/python-bluezero/blob/master/docs/install_bluez.rst">instruction</a> are available in the Bluezero repository.
+    </p>
+    <p>
+        Make sure you take care to follow the instructions in the
+        <a href="https://github.com/ukBaz/python-bluezero/blob/master/docs/install_bluez.rst#how-to-config-and-compile-bluez-543-and-later">note</a>
+        if you have a Raspberry Pi 3
+    </p>
+    <h2>Getting the Bluezero microbit library</h2>
+    <p>
+        You will need to get the source of the library from <a href="https://github.com/ukBaz/python-bluezero">https://github.com/ukBaz/python-bluezero</a>
+    </p>
+</div>
+<div>
+    <h2>Commands</h2>
+    <table>
+        <tr><th>Command</th><th>Description</th></tr>
+        <tr><td>connect</td><td>Connect to the specified microbit for this instance</td></tr>
+        <tr><td>disconnect</td><td>Disconnect from the microbit</td></tr>
+        <tr><td>spin_right</td><td>Spin right wheel forward and left wheel backwards so bit:bot spins</td></tr>
+        <tr><td>spin_left</td><td>Spin left wheel forward and right wheel backwards so bit:bot spins</td></tr>
+        <tr><td>forward</td><td>Spin both wheels forward</td></tr>
+        <tr><td>reverse</td><td>Spin both wheels backwards</td></tr>
+        <tr><td>stop</td><td>Stop both wheels of the bit:bot</td></tr>
+        <tr><td>buzzer_on</td><td>Play the buzzer</td></tr>
+        <tr><td>buzzer_off</td><td>Stop the buzzer</td></tr>
+    </table>
+</div>
+<div>
+    <h2>Examples</h2>
+    <code>
+        from time import sleep<br>
+        from bluezero import microbit<br>
+        bitbot = microbit.BitBot(name='micro:bit')<br>
+        bitbot.connect()<br>
+        bitbot.buzzer_on()<br>
+        sleep(0.5)<br>
+        bitbot.buzzer_off()<br>
+        sleep(0.5)<br>
+        bitbot.spin_right()<br>
+        sleep(1)<br>
+        bitbot.spin_left()<br>
+        sleep(1)<br>
+        bitbot.forward()<br>
+        sleep(1)<br>
+        bitbot.reverse()<br>
+        sleep(0.5)
+        bitbot.stop()<br>
+        bitbot.disconnect()<br>
+    </code>
+</div>
+</body>
+</html>

@@ -17,29 +17,30 @@
         <a href="https://lancaster-university.github.io/microbit-docs/ble/profile/#gatt-services">Bluetooth</a> profile for the micro:bit
         to control the pins remotely from a Raspberry Pi.
         I did a little video demo of it at:<br>
-        <iframe width="420" height="315" src="https://youtu.be/Fo4G0_cGMNk"></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Fo4G0_cGMNk" frameborder="0" allowfullscreen></iframe>
+
     </p>
 </div>
 <div>
     <h2>Equipment</h2>
     <p>
         <ul>
-    <li><a href="http://4tronix.co.uk/blog/?p=1490">bit:bot</a>Learn how to program the bit:bot without using Bluetooth</li>
-    <li><a href="http://4tronix.co.uk/store/index.php?rt=product/product&product_id=588">bit:bot</a>More information on the bit:bot</li>
-    <li><a href="https://shop.pimoroni.com/products/raspberry-pi-3">Pi 3</a>Any Linux board should work although I used one of these</li>
+    <li><a href="http://4tronix.co.uk/blog/?p=1490">bit:bot</a> : Learn how to program the bit:bot without using Bluetooth</li>
+    <li><a href="http://4tronix.co.uk/store/index.php?rt=product/product&product_id=588">bit:bot</a> : Where to buy the bit:bot</li>
+    <li><a href="https://shop.pimoroni.com/products/raspberry-pi-3">Pi 3</a> : Any Linux board should work although I used one of these</li>
     </ul>
     </p>
 </div>
 <div>
     <h2>Setting Up The micro:bit</h2>
-    <p>Thanks to bitty software this is very easy as they have done a hex file for the micro:bit that exposes
+    <p>Thanks to Bitty Software this is very easy as they have done a hex file for the micro:bit that exposes
     all of the Bluetooth services we need. This was created for their micro:bit blue app (you should check the app out as it is very good).
         You can download the hex file from their <a href="http://www.bittysoftware.com/downloads.html">webiste</a>. You will need to look for
-        "Main Bluetooth services, pairing not required" link for the download. The loading of the hex file is standard for the micro:bot.
+        "Main Bluetooth services, pairing not required" link for the download. The loading of the hex file is standard for the micro:bit.
     </p>
     <p>
         First time you start the micro:bit with this hex file it will get you to draw a circle. This is to calibrate the magnetometer.
-        One that is done you are done on the micro:bit.
+        Once that is done you are done on the micro:bit.
     </p>
     <h2>Setting Up the Raspberry Pi</h2>
     <p>
@@ -73,7 +74,7 @@
     </table>
 </div>
 <div>
-    <h2>Examples</h2>
+    <h2>Example</h2>
     <code>
         from time import sleep<br>
         from bluezero import microbit<br>

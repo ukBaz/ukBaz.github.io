@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="howto.css">
+    <meta charset="UTF-8">
+    <title>ubit BLE Pin Service</title>
+</head>
+<p>
+<h1>Getting Started with the micro:bit IO Pin Service</h1>
+
+<p>What I wanted to capture in this post was  the process I went through to understand the IO Pin Service from the
+    <a href="https://lancaster-university.github.io/microbit-docs/resources/bluetooth/bluetooth_profile.html">micro:bit BLE Profile</a>
+    .</p>
+<p>The most difficult piece for me to get my head around was the PWM output and changing the IO pin configuration
+    to be digital or analogue inputs.<br>
+    Below is some details of the apps I used and how I broke the problem up.
+
+</p>
+
+<h2>BLE Apps:</h2>
+<p>Before I start to add functionality to the Bluezero library I like to test my understanding of the
+    service/characteristics with as direct a method as possible.
+    This means working out what hexadecimal <a href="https://en.wikipedia.org/wiki/Octet_(computing)">octets</a> need to be sent.
+Doing this type of work normally means using the
+    <a href="https://www.nordicsemi.com/eng/Products/Nordic-mobile-Apps/nRF-Connect-for-mobile-previously-called-nRF-Master-Control-Panel">nRF Connect app</a>
+    from Nordic Semiconductor on a mobile platform. If you are going to be experimenting with BLE and you only want one
+    app, then this is the one to have.</p>
+<p>For Linux and Chromebook it is bluetoothctl that I use for this testing.
+    bluetoothctl is really helpful both for testing what data is sent and received. On Linux it is also useful to have
+    it running in a different shell when I’m testing Bluezero to see messages from the Bluetooth daemon.<br>
+    One of the problems with bluetoothctl is that there isn’t lots of internet resources you can refer to about it.<br>
+    Apart from typing ‘bluetoothctl’ and then typing ‘help’ to get a list of the commands, you need to work things
+    out for yourself which isn't always easy the first time.</p>
+<p>On the Mac I've found
+    <a href="https://itunes.apple.com/gb/app/lightblue/id639944780?mt=12">Lightblue</a> to be the best although it isn't
+    great and I tend not to use it as often as the others.
+</p>
+
+<h2>PWM Output:</h2>
+<p>Right, back to those pesky characteristics. Let’s start with the PWM output characteristic. It is made up of seven
+    octets to define three numbers which are:</p>
+<ul>
+    <li>Pin number (1 octet)</li>
+    <li>Value is in the range 0 – 1023 (2 octets)</li>
+    <li>Period is the duration of time of one cycle in milliseconds (4 octets)</li>
+</ul>
+<p>The final thing we need to be aware of is that fields are transmitted over the air in Little Endian format.</p>
+
+<p>Let’s start with the easy one, the pin number. Take the pin number e.g. 0 and convert it to hexadecimal octet 0x00.<br>
+    OK, not a great example, let’s try 12 & 19. They would be 0x0C and 0x13 in hexadecimal.
+</p>
+<p>For the value, let’s take four values and convert them into hexadecimal.<br>
+256, 512, 768, 1023 become the follow in hexadecimal occupying two octets 0x0100, 0x0200, 0x0300 & 0x03FF. </p>
+<p>However that isn’t the value we need to send as we need to not the little endian format.
+    This means that the four values we send are 0x0001, 0x0002, 0x0003 & 0xFF03.</p>
+<p>I was looking at this to activate the buzzer on the <a href="https://www.kitronik.co.uk/5610-mipower-board-for-the-bbc-microbit.html">MI:power board</a>.
+    I choose the 49th key from a piano which is 440 Hz.</p>
+<p>This has a period of roughly 2273 microseconds which as a 4 octet hexadecimal would be 0x000008E1.<br>
+    We need to change this to little endian so it become 0xE1080000.</p>
+<p>
+Now we have worked out how to handle each of the values let’s put it together.<br>
+    If we wanted to set pin 0 to a value of 512 with a period of 2273 we would send  0x00 0002 E1080000.</p>
+<p>In the nRF Connect app this would look like:
+</p>
+    <img src="../asset/send_value.png" alt="nRF Connect App send value" >
+
+<p>This resulted in me creating this cheat sheet for writing digital output and pwm outputs.</p>
+<img src="../asset/ubit_write.png" alt="ubit Cheat sheet" width="95%" >
+
+<h2>Reading Digital Values:</h2>
+<p>To read a value of a pin, the Pin IO Configuration needs to be changed.</p>
+<p>
+    This characteristic is 32 bits (4 octets) where the 20 least significant bits represent the 20 pins. <br>
+    If we set a bit to 0 it represents an output while a 1 represents an input.</p>
+<p>
+    If we want to set Pin 0 as an input we would need to set the bit to 1.<br>
+    This would make the hexadecimal value as 0x00000001. <br>
+    So again, as the data needs to be little endian we would need to send this as 0x01000000.
+</p>
+
+<h2>Reading Analogue Values:</h2>
+<p>The Pin AD Configuration is again a characteristic of 32 bits (4 octets) the same as the Pin IO Configuration
+    but this time a 0 represents a digital pin and 1 represents analogue.</p>
+<p>To read an analogue value on a pin we need set it as an input and analogue.<br>
+    For example pin 2 would require 0x04000000 to be sent to the Pin IO Configuration and Pin AD Configuration.
+</p>
+<p>This resulted in me creating this cheat sheet for reading digital and analogue inputs:</p>
+<img src="../asset/ubit_read.png" alt="ubit Cheat sheet" width="95%" >
+
+</body>
+</html>

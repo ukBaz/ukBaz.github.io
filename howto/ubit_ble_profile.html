@@ -8,12 +8,23 @@
 <p>
 <h1>Getting Started with the micro:bit IO Pin Service</h1>
 
+<p> The intention of the <a href="https://github.com/ukBaz/python-bluezero">Bluezero</a> library is that it will allow
+    people to interact with over Bluetooth without necessarily
+knowing too much about the low-level details. However, I also want people to be able to learn more about Bluetooth. </p>
+
 <p>What I wanted to capture in this post was  the process I went through to understand the IO Pin Service from the
     <a href="https://lancaster-university.github.io/microbit-docs/resources/bluetooth/bluetooth_profile.html">micro:bit BLE Profile</a>
-    .</p>
-<p>The most difficult piece for me to get my head around was the PWM output and changing the IO pin configuration
-    to be digital or analogue inputs.<br>
-    Below is some details of the apps I used and how I broke the problem up.
+    when I was implementing this is Bluezero.</p>
+
+<p>The most difficult pieces for me to get my head around were:
+    <ul>
+    <li>the Pulse Width Modulation (PWM) output </li>
+    <li>change pins to be digital or analogue inputs </li>
+</ul>
+</p>
+
+<p> The first thing needed is some way of sending the low-level commands to the micro:bit.<br>
+    Below are some details of the apps I used and how I broke the problem up.
 
 </p>
 
@@ -37,7 +48,8 @@ Doing this type of work normally means using the
 </p>
 
 <h2>PWM Output:</h2>
-<p>Right, back to those pesky characteristics. Let’s start with the PWM output characteristic. It is made up of seven
+<p>Right, back to those pesky characteristics. Let’s start with the PWM output [UUID: E95DD822-251D-470A-A062-FA1922DFA9A8]
+    characteristic. It is made up of seven
     octets to define three numbers which are:</p>
 <ul>
     <li>Pin number (1 octet)</li>
@@ -50,13 +62,15 @@ Doing this type of work normally means using the
     OK, not a great example, let’s try 12 & 19. They would be 0x0C and 0x13 in hexadecimal.
 </p>
 <p>For the value, let’s take four values and convert them into hexadecimal.<br>
-256, 512, 768, 1023 become the follow in hexadecimal occupying two octets 0x0100, 0x0200, 0x0300 & 0x03FF. </p>
-<p>However that isn’t the value we need to send as we need to not the little endian format.
+256, 512, 768, 1023 become the following in hexadecimal occupying two octets 0x0100, 0x0200, 0x0300 & 0x03FF. </p>
+
+<p>However that isn’t the value we need to send as they are not in the little endian format.
     This means that the four values we send are 0x0001, 0x0002, 0x0003 & 0xFF03.</p>
-<p>I was looking at this to activate the buzzer on the <a href="https://www.kitronik.co.uk/5610-mipower-board-for-the-bbc-microbit.html">MI:power board</a>.
-    I choose the 49th key from a piano which is 440 Hz.</p>
-<p>This has a period of roughly 2273 microseconds which as a 4 octet hexadecimal would be 0x000008E1.<br>
-    We need to change this to little endian so it become 0xE1080000.</p>
+<p>My experiments were to activate the buzzer on the
+    <a href="https://www.kitronik.co.uk/5610-mipower-board-for-the-bbc-microbit.html">MI:power board</a>
+   so I choose the note that is the 49th key from a piano which is 440 Hz and the frequency I wanted to send.</p>
+<p>This frequency has a period of roughly 2273 microseconds which as a 4 octet hexadecimal would be 0x000008E1.<br>
+    We need to change this to little endian so it becomes 0xE1080000.</p>
 <p>
 Now we have worked out how to handle each of the values let’s put it together.<br>
     If we wanted to set pin 0 to a value of 512 with a period of 2273 we would send  0x00 0002 E1080000.</p>
@@ -64,27 +78,57 @@ Now we have worked out how to handle each of the values let’s put it together.
 </p>
     <img src="../asset/send_value.png" alt="nRF Connect App send value" >
 
-<p>This resulted in me creating this cheat sheet for writing digital output and pwm outputs.</p>
+<p>When the send button was pressed this created a suitably annoying beep on the the MI:power board</p>
+<p>To stop the beep we can just send 14 zeros.</p>
+
+<p>After my experiments I summarised my experiments with the IO outputs with a cheat sheet for future reference:</p>
 <img src="../asset/ubit_write.png" alt="ubit Cheat sheet" width="95%" >
 
-<h2>Reading Digital Values:</h2>
-<p>To read a value of a pin, the Pin IO Configuration needs to be changed.</p>
+<h2>Changing direction and type of Pins</h2>
+<p>
+    With the outputs taken care of, it was time to move on to understanding inputs.
+</p>
+<p>
+    There are two characteristics that control if pins are input/output and analogue/digital. Depending how these are
+    set will change the behaviour of pin data.
+</p>
+<h3>Reading Digital Values:</h3>
+<p>To read the value of a pin, the Pin IO Configuration [UUID: E95DB9FE-251D-470A-A062-FA1922DFA9A8] needs to be changed.</p>
 <p>
     This characteristic is 32 bits (4 octets) where the 20 least significant bits represent the 20 pins. <br>
-    If we set a bit to 0 it represents an output while a 1 represents an input.</p>
+    If we set a bit to 0 it represents an output while a 1 represents an input.
+</p>
 <p>
     If we want to set Pin 0 as an input we would need to set the bit to 1.<br>
     This would make the hexadecimal value as 0x00000001. <br>
     So again, as the data needs to be little endian we would need to send this as 0x01000000.
 </p>
 
-<h2>Reading Analogue Values:</h2>
+<h3>Reading Analogue Values:</h3>
 <p>The Pin AD Configuration is again a characteristic of 32 bits (4 octets) the same as the Pin IO Configuration
-    but this time a 0 represents a digital pin and 1 represents analogue.</p>
-<p>To read an analogue value on a pin we need set it as an input and analogue.<br>
-    For example pin 2 would require 0x04000000 to be sent to the Pin IO Configuration and Pin AD Configuration.
+    [UUID: E95D5899-251D-470A-A062-FA1922DFA9A8] but this time a 0 represents a digital pin and 1 represents analogue.
 </p>
-<p>This resulted in me creating this cheat sheet for reading digital and analogue inputs:</p>
+<p>
+    To read an analogue value on a pin we need set it as an input and analogue.<br>
+    For example pin 2 would require 0x04000000 to be sent to both the Pin IO Configuration and Pin AD Configuration.
+</p>
+<h3>Getting the value</h3>
+<p>Now the pin is configured as an input, this means when we read the Pin Data
+    [UUID: E95DB9FE-251D-470A-A062-FA1922DFA9A8] characteristic we will see pairs of octets return that represent the
+    pin and value. For example if pin 5 is a digital input with a high on it then the hexidecimal that would be returned
+would be: <i>0501</i>. <br>
+    0x05 is the pin and 0x01 represents a high.
+</p>
+<p>
+    It is similar for the analogue input in that there is still a pin/value pair but the value can be higher than 1.
+    It can be in the range of 0 to 255 (0xFF).
+    For example pin 2 at half value would return <i>0280</i><br>
+    0x05 is the pin and 0x80 is a value of 128 in decimal.
+
+</p>
+<p>
+    After my experiments I summarised my experiments with the IO inputs with a cheat sheet for future reference:
+</p>
 <img src="../asset/ubit_read.png" alt="ubit Cheat sheet" width="95%" >
 
 </body>

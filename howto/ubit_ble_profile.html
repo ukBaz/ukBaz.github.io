@@ -54,7 +54,7 @@ Doing this type of work normally means using the
 <ul>
     <li>Pin number (1 octet)</li>
     <li>Value is in the range 0 – 1023 (2 octets)</li>
-    <li>Period is the duration of time of one cycle in milliseconds (4 octets)</li>
+    <li>Period is the duration of time of one cycle in microseconds (4 octets)</li>
 </ul>
 <p>The final thing we need to be aware of is that fields are transmitted over the air in Little Endian format.</p>
 
@@ -68,8 +68,8 @@ Doing this type of work normally means using the
     This means that the four values we send are 0x0001, 0x0002, 0x0003 & 0xFF03.</p>
 <p>My experiments were to activate the buzzer on the
     <a href="https://www.kitronik.co.uk/5610-mipower-board-for-the-bbc-microbit.html">MI:power board</a>
-   so I choose the note that is the 49th key from a piano which is 440 Hz and the frequency I wanted to send.</p>
-<p>This frequency has a period of roughly 2273 microseconds which as a 4 octet hexadecimal would be 0x000008E1.<br>
+   so I choose the note that is the 49th key from a piano and has a frequency 440 Hz.</p>
+<p>This frequency converts into a period of roughly 2273 microseconds which as a 4 octet hexadecimal would be 0x000008E1.<br>
     We need to change this to little endian so it becomes 0xE1080000.</p>
 <p>
 Now we have worked out how to handle each of the values let’s put it together.<br>
@@ -81,7 +81,7 @@ Now we have worked out how to handle each of the values let’s put it together.
 <p>When the send button was pressed this created a suitably annoying beep on the the MI:power board</p>
 <p>To stop the beep we can just send 14 zeros.</p>
 
-<p>After my experiments I summarised my experiments with the IO outputs with a cheat sheet for future reference:</p>
+<p>After my experiments, I summarised what I had done with the IO outputs on a cheat sheet for future reference:</p>
 <img src="../asset/ubit_write.png" alt="ubit Cheat sheet" width="95%" >
 
 <h2>Changing direction and type of Pins</h2>
@@ -105,8 +105,8 @@ Now we have worked out how to handle each of the values let’s put it together.
 </p>
 
 <h3>Reading Analogue Values:</h3>
-<p>The Pin AD Configuration is again a characteristic of 32 bits (4 octets) the same as the Pin IO Configuration
-    [UUID: E95D5899-251D-470A-A062-FA1922DFA9A8] but this time a 0 represents a digital pin and 1 represents analogue.
+<p>The Pin AD Configuration [UUID: E95D5899-251D-470A-A062-FA1922DFA9A8] is again a characteristic of 32 bits (4 octets) the same as the Pin IO Configuration
+     but this time a 0 represents a digital pin and 1 represents analogue.
 </p>
 <p>
     To read an analogue value on a pin we need set it as an input and analogue.<br>
@@ -123,13 +123,21 @@ would be: <i>0501</i>. <br>
     It is similar for the analogue input in that there is still a pin/value pair but the value can be higher than 1.
     It can be in the range of 0 to 255 (0xFF).
     For example pin 2 at half value would return <i>0280</i><br>
-    0x05 is the pin and 0x80 is a value of 128 in decimal.
+    0x02 is the pin and 0x80 is a value of 128 in decimal.
 
 </p>
 <p>
-    After my experiments I summarised my experiments with the IO inputs with a cheat sheet for future reference:
+    After my experiments, I summarised what I had done with the IO inputs on a cheat sheet for future reference:
 </p>
 <img src="../asset/ubit_read.png" alt="ubit Cheat sheet" width="95%" >
 
 </body>
+<hr>
+
+<footer>
+    <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" />
+    </a>
+    <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+</footer>
 </html>

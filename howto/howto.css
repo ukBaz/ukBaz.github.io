@@ -51,6 +51,11 @@ H2 {
 
 }
 
+.center {
+    display: block;
+    margin: 0 auto;
+}
+
 p.emphesis {
     color: #0996ff;
 }

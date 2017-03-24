@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="howto.css">
+    <meta charset="UTF-8">
+    <title>Project Big Button</title>
+</head>
+<p>
+<h1>Project Big Button</h1>
+<h2>Overview</h2>
+<p>Exchanging data between a number of Bluetooth Low Energy devices/sensors from a Linux hub is something that could be
+    useful for a number of use cases.</p>
+<p>As I’ve been learning Bluetooth on Linux using Python I’ve been looking for a fun way to demonstrate the above
+    functionality. Then I remembered about the <a
+            href="http://www.winkleink.com/2016/08/buttonflash-game-made-with-raspberry-pi.html">buttonFlash</a> game
+    that Albert Hickey had built and shown at a community
+    event in Cambridge. He had used WiFi with esp8266 in Pringles tubes.</p>
+<p>
+    I thought this game was a good candidate to do with Bluetooth. I had originally intended to also use Pringles
+    tubes and then I saw the 100mm buttons which were too big for Pringles tubes.
+    I settled on using the micro:bit as my Bluetooth peripheral as it has a very well defined BLE profile and
+    predefined code from Martin Woolley so I could focus on the Python code on the Dragonboard 410c.
+</p>
+<p>I’ve done a quick video run through of the project:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/VeuXedlyDvc" frameborder="0"
+        allowfullscreen></iframe>
+<h2>Bill Of Material</h2>
+<table>
+    <tr>
+        <td>Dragonboard 410c</td>
+        <td>
+            <a href="http://www.96boards.org/product/dragonboard410c/">http://www.96boards.org/product/dragonboard410c/</a>
+        </td>
+    </tr>
+    <tr>
+        <td>micro:bit microcontroller</td>
+        <td><a href="https://shop.pimoroni.com/products/microbit">https://shop.pimoroni.com/products/microbit</a></td>
+    </tr>
+    <tr>
+        <td>Driver board</td>
+        <td><a href="https://www.kitronik.co.uk/5620-motor-driver-board-for-the-bbc-microbit-v2.html">https://www.kitronik.co.uk/5620-motor-driver-board-for-the-bbc-microbit-v2.html</a>
+        </td>
+    </tr>
+    <tr>
+        <td>Large arcade buttons</td>
+        <td><a href="https://www.coolcomponents.co.uk/en/components/switches/buttons/big-dome-push-button-blue.html">https://www.coolcomponents.co.uk/en/components/switches/buttons/big-dome-push-button-blue.html</a>
+        </td>
+    </tr>
+    <tr>
+        <td>Really useful box</td>
+        <td><a href="http://www.reallyusefulstorageboxes.co.uk/1-6litre-really-useful-storage-box-c2x12248525">http://www.reallyusefulstorageboxes.co.uk/1-6litre-really-useful-storage-box-c2x12248525</a>
+        </td>
+    </tr>
+
+</table>
+
+<h2>Setting Up The micro:bit</h2>
+<p>Thanks to Bitty Software this is very easy as they have done a hex file for the micro:bit that exposes all of the
+    Bluetooth services we need. This was created for their micro:bit blue app (you should check the app out as it is
+    very
+    good). You can download the hex file from their <a href="http://www.bittysoftware.com/downloads.html#microbit_blue">webiste</a>.
+
+<p>You will need to look for "Main Bluetooth services, pairing not required" link for the download. The loading of the
+    hex
+    file is standard for the micro:bit. We have chosen ‘pairing not required’ option because for this exercise we value
+    simplicity more than security.</p>
+
+<p>The first time you start the micro:bit with this hex file it will be requested to draw a circle. This is to calibrate
+    the magnetometer. Once calibration is done you are good to use the micro:bit.</p>
+
+<h2>Setting Up the Dragonboard 410c</h2>
+<p>This is a little bit more involved as at the time of writing this Debian Jessie comes with BlueZ (the Linux Bluetooth
+    stack) version 5.23.</p>
+<p>We are going to access BlueZ through its D-Bus GATT API which was released to production in version 5.43.
+    So we need to upgrade the version of BlueZ.
+    There are full instruction on how to perform the upgrade available in the Bluezero repository at:</p>
+<a href="https://github.com/ukBaz/python-bluezero/blob/master/docs/install_bluez.rst">https://github.com/ukBaz/python-bluezero/blob/master/docs/install_bluez.rst</a>
+<p>The good news is that the next major release of Debian is Stretch which will come with at least BlueZ version
+    5.43</p>
+
+<h2>Python Libraries</h2>
+<p>There are only a couple of non-default libraries that need to be added for this to project.</p>
+
+<p><a href="https://pypi.python.org/pypi/guizero/">guizero</a> - Allows the creation of GUIs with a low learning curve
+</p>
+<p><a href="https://pypi.python.org/pypi/pydbus/">pydbus</a> - A pythonic library for accessing D-Bus</p>
+<p>These can both be installed using <code>‘pip3 install’</code>.</p>
+
+<h2>Bluetooth Low Energy</h2>
+<p>Bluetooth and even just BLE is a very big topic that is too large to be covered in this article. The key piece of BLE
+    (for this project) is the Generic Attribute Profile (GATT) which is used to store Services, Characteristics and
+    related
+    data in a simple lookup table using 16-bit UUIDs for each entry in the table.</p>
+<p>Characteristics are defined attribute types that contain a single logical value which is what we are going to focus
+    on.</p>
+<p>The full details of the micro:bit BLE profile is available at:</p>
+<p><a href="https://lancaster-university.github.io/microbit-docs/resources/bluetooth/bluetooth_profile.html">https://lancaster-university.github.io/microbit-docs/resources/bluetooth/bluetooth_profile.html</a>
+<h2>D-Bus</h2>
+<p>The BlueZ API makes use of the D-Bus software bus, to communicate between your program and the Bluetooth daemon. This
+    article will not attempt to explain D-Bus. Hopefully it will be enough to say the Bluetooth information used by
+    BlueZ on
+    linux has a directory looking structure that reflects the Bluetooth GATT database. It is this D-Bus object path that
+    is
+    used as input for pydbus.</p>
+<p>We have created a Python function called get_dbus_path that helps us get the D-Bus object path for known Bluetooth
+    GATT
+    UUID’s</p>
+<p>This diagram shows how the adapter, device, service, characteristic and descriptor build to make the D-Bus object
+    path</p>
+<pre>
+-> /org/bluez/hci0 {org.bluez.Adapter1: Address}
+|
+|-> dev_xx_xx_xx_xx_xx_xx {org.bluez.Device1: Address}
+| |
+| -> servicexxxx {org.bluez.GattService1: UUID}
+| |
+| -> charxxxx {org.bluez.GattCharacteristic1: UUID}
+| | |
+| | -> descxxxx {org.bluez.GattDescriptor1: UUID}
+| |
+| -> charxxxx {org.bluez.GattCharacteristic1: UUID}
+|
+-> dev_xx_xx_xx_xx_xx_xx {org.bluez.Device1: Address}
+</pre>
+<p>For each of the <a
+        href="https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/adapter-api.txt?h=5.43">Adapter</a>,
+    <a href="https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/device-api.txt?h=5.43">Device</a>
+    and <a href="https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/gatt-api.txt?h=5.43">GATT</a>
+    levels there is a corresponding documented D-Bus API from BlueZ </p>
+
+
+<h2>Python Code</h2>
+<p>The full code used for the demo is available as a <a
+        href="https://gist.github.com/ukBaz/267c40c4fe71b4dd6d6de82e62ac1bf3#file-big_button_gui-py">gist</a></p>
+
+<p>In this section some of the key pieces of code will be explained as to what it is doing.</p>
+<p>To get the object:</p>
+<pre>
+    self.dev_obj = bus.get(BLUEZ_SERVICE_NAME,
+                           self.get_dbus_path(self.address))
+</pre>
+
+<p><code>self.dev_obj</code> is a pythonic object that has the methods and properties described in the BlueZ <a
+        href="https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/device-api.txt?h=5.43">Device</a> API.
+    So to connect to
+    that device we would call the method Connect like this:</p>
+<pre>
+    self.dev_obj.Connect()
+</pre>
+
+Whereas if we wanted to get the property that stores what the connection state is it would be:
+<pre>
+    print(self.dev_obj.Connected)
+</pre>
+<p>An event loop needs to be run in order to receive all Bluetooth related events. To specify the callback to be
+    executed
+    on the event is as follows:</p>
+<pre>
+    self.dev_obj.onPropertiesChanged = self.dev_connect
+</pre>
+<p>The <code>self.dev_connect</code> function is used to know when the GATT database can be built after the
+    device has connected.
+<p>This readiness to build the GATT database is indicated by the ServicesResolved property being set to True.
+    We also use an event callback to capture the button press.
+</p>
+<pre>
+    self.dev_btn.onPropertiesChanged = self.btn_pressed
+</pre>
+    <p>This is on the button A characteristic.</p>
+
+<p>The micro:bit Bluetooth profile allows us to read and write to the pins of the device.
+    Firstly we will set all of the pins as digital (rather than analogue) pins</p>
+<pre>
+    dev_ad_config.WriteValue([0x00, 0x00, 0x00, 0x00], {})
+</pre>
+<p>Then we set all the pins as outputs with:</p>
+<pre>
+    dev_io_config.WriteValue([0x00, 0x00, 0x00, 0x00], {})
+</pre>
+<p>For switching the button light we use pins 8 and 11. To set them we send the pin number and the pin value we require.
+    We
+    use pin 8 as the ‘ground’ pin and pin 11 as either low or high. e.g:</p>
+<pre>
+    self.dev_pins.WriteValue([0x08, 0x00, 0x0C, 0x00], {})
+    self.dev_pins.WriteValue([0x08, 0x00, 0x0C, 0x01], {})
+</pre>
+
+<h2>What next</h2>
+<p>The ‘button box’ is functioning very well and now it has been built more possibilities are presenting themselves. For
+    example, the LED display is clearly visible through the box and could be used to convey information.</p>
+<p>For example the buttons could be used as a quiz buzzer and the LEDs could be used to display that tests score.</p>
+<footer>
+    <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" style="border-width:0"
+             src="https://i.creativecommons.org/l/by/4.0/88x31.png"/>
+    </a>
+    <br/>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative
+    Commons Attribution 4.0 International License</a>.
+</footer>
+</body>
+</html>

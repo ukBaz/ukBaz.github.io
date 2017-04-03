@@ -15,7 +15,7 @@
                                   href="https://www.google.com/url?q=http://www.bittysoftware.com/tutorials/solutions/game_controller/game_controller_pxt_solution.png&amp;sa=D&amp;ust=1491173459706000&amp;usg=AFQjCNGQvXdKWO9o933XSjm2TF59CfvUDw">http://www.bittysoftware.com/tutorials/solutions/game_controller/game_controller_pxt_solution.png</a></span>
 </p>
 <h2 class="c10" id="h.tibo3r67lwdv"><span class="c6">On The Phone</span></h2>
-<p class="c3"><span class="c0">There is an App for Android and iOS and can be downloaded from:</span></p>
+<p class="c3"><span class="c0">There is an App for Android and iOS that can be downloaded from:</span></p>
 <p class="c3"><span class="c5"><a class="c4"
                                   href="https://www.google.com/url?q=https://play.google.com/store/apps/details?id%3Dcom.bittysoftware.bittygamectrlr%26rdid%3Dcom.bittysoftware.bittygamectrlr&amp;sa=D&amp;ust=1491173459708000&amp;usg=AFQjCNE_iN8WepwnXb8hjWd_GHg55fdKFQ">https://play.google.com/store/apps/details?id=com.bittysoftware.bittygamectrlr&amp;rdid=com.bittysoftware.bittygamectrlr</a></span>
 </p>
@@ -24,7 +24,7 @@
 </p>
 <p class="c1"><span class="c0"></span></p>
 <h3 class="c7" id="h.wog0drlrpuse"><span class="c2">The Buttons</span></h3>
-<p class="c3"><span class="c0">Below is a screen grab of what the app looks like. I&rsquo;ve annotated it with the names the buttons are referred to as in PXT:</span>
+<p class="c3"><span class="c0">Below is a screen grab of what the app looks like. I&rsquo;ve annotated it with the names used in PXT to refer to the buttons:</span>
 </p>
 <p class="c1"><span class="c0"></span></p>
 <p class="c3"><span
@@ -36,7 +36,7 @@
 <p class="c3"><span class="c0">The code for the micro:bit can be done with C++ or with PXT. I choose to go with the PXT editor.</span>
 </p>
 <h2 class="c10" id="h.p0hez2p4bcyz"><span class="c6">Events</span></h2>
-<p class="c3"><span class="c0">The app works by sending &lsquo;events&rsquo; to the micro:bit. We have to write code for the micro:bit to interpret those events and make the write things happen.</span>
+<p class="c3"><span class="c0">The app works by sending &lsquo;events&rsquo; to the micro:bit. We have to write code for the micro:bit to interpret those events and make the correct things happen.</span>
 </p>
 <h3 class="c7" id="h.ociar35ke0yf"><span class="c2">On Startup</span></h3>
 <p class="c3"><span class="c0">It is always nice to have a message display on startup so you know you have the correct program loaded up. E.g.</span>
@@ -56,7 +56,7 @@
         style="width: 373.00px; height: 244.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
         title=""></span></p>
 <h3 class="c7" id="h.8vzr86lg0i6i"><span class="c2">On Bluetooth Disconnection</span></h3>
-<p class="c3"><span class="c0">When we disconnect then make sure everything is of and a message to the user</span></p>
+<p class="c3"><span class="c0">When we disconnect then make sure everything is off and send a message to the user</span></p>
 <p class="c3"><span
         style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 376.00px; height: 256.00px;"><img
         alt="" src="../asset/bitbot_remote/image07.png"
@@ -64,7 +64,7 @@
         title=""></span></p>
 <p class="c1"><span class="c0"></span></p>
 <h3 class="c7" id="h.568onnxtecsn"><span class="c2">Buzzer</span></h3>
-<p class="c3"><span class="c0">We can capture when buttons are pressed and released. We will make the buzzer come on when button 4 is pressed and turn off when button 4 is released.</span>
+<p class="c3"><span class="c0">We can capture when buttons are pressed and released. We will make the buzzer turn on when button 4 is pressed and turn off when button 4 is released.</span>
 </p>
 <p class="c3"><span>When button 4 is pressed we do an analog write to pin 14 to make the buzzer sound.</span></p>
 <p class="c3"><span
@@ -73,7 +73,7 @@
         style="width: 624.00px; height: 102.67px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
         title=""></span></p>
 <h3 class="c7" id="h.sz23m3bq4933"><span class="c2">Move Forward</span></h3>
-<p class="c3"><span class="c0">We are going to code up that when button A is pressed we will move forward and when it is released the robot will stop. Not the only way of doing it but a nice straight forward way for this tutorial.</span>
+<p class="c3"><span class="c0">We are going to code up that when button A is pressed we will move forward and when it is released the robot will stop. This is not the only way of doing it but a nice straight forward way for this tutorial.</span>
 </p>
 <p class="c3"><span class="c0">To move forward we need to set pins 1 and 0 high while pins 12 and 8 are low. We do this when the button A is pressed and all pins are low when the button is released.</span>
 </p>
@@ -83,7 +83,7 @@
         style="width: 624.00px; height: 177.33px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
         title=""></span></p>
 <h3 class="c7" id="h.wxj8bz8uvlgd"><span class="c2">Move Backwards</span></h3>
-<p class="c3"><span class="c0">Button B is going to move the robot backwards and to do this we reverse which pins are high. This means that pins 12 and 8 are high. Again, to stop the robot on releasing the button we set all pins to low.</span>
+<p class="c3"><span class="c0">Button B is going to move the robot backwards and to do this we reverse which pins are high. This means that pins 12 and 8 are high. Same as last time, to stop the robot on releasing the button we set all pins to low.</span>
 </p>
 <p class="c3"><span
         style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 624.00px; height: 185.33px;"><img
@@ -91,7 +91,7 @@
         style="width: 624.00px; height: 185.33px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
         title=""></span></p>
 <h3 class="c7" id="h.r5pey33rn308"><span class="c2">Spin Left</span></h3>
-<p class="c3"><span class="c0">Button C is going to make the robot spin left. We do this by making the right motor move forward.</span>
+<p class="c3"><span class="c0">Button C is going to make the robot spin left. We do this by making only the right motor move forwards.</span>
 </p>
 <p class="c3"><span
         style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 624.00px; height: 189.33px;"><img
@@ -99,7 +99,7 @@
         style="width: 624.00px; height: 189.33px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
         title=""></span></p>
 <h3 class="c7" id="h.pg0r3xsmjpoj"><span class="c2">Spin Right</span></h3>
-<p class="c3"><span class="c0">Finally button D is going to spin the robot and we do this by just sending the left motor forward.</span>
+<p class="c3"><span class="c0">Finally button D is going to spin the robot right and we do this by just rotating the left motor forwards.</span>
 </p>
 <p class="c3"><span
         style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 624.00px; height: 192.00px;"><img
@@ -108,7 +108,7 @@
         title=""></span></p>
 <p class="c1"><span class="c0"></span></p>
 <h2 class="c10" id="h.nvm92kkf8obh"><span class="c6">Project Settings</span></h2>
-<p class="c3"><span class="c0">To make things simple pairing </span></p>
+<p class="c3"><span class="c0">We are going to change the default project settings so that we don't need to pair our phone with the micro:bit: </span></p>
 <p class="c1"><span class="c0"></span></p>
 <p class="c3"><span
         style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 460.00px; height: 123.00px;"><img
@@ -116,6 +116,7 @@
         style="width: 460.00px; height: 123.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
         title=""></span></p>
 <h2 class="c10" id="h.6wplp0ut8rxv"><span class="c6">What Next</span></h2>
-<p class="c3"><span class="c0">There are a number of ways that this solution could be improved. We could improve the logic so that a couple buttons could be used along with sending analog values to the pins. This would allow better steering etc.</span>
+<p class="c3"><span class="c0">There are a number of ways that this solution could be improved. We could improve the logic so that a couple buttons could be used along with sending analog values to the pins. This would allow better steering etc.
+    We could have forward and reverse on the right hand side buttons and and steering on the left hand buttons.  </span>
 </p></body>
 </html>

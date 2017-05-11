@@ -1,0 +1,195 @@
+<html>
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <link rel="stylesheet" type="text/css" href="howto.css">
+    <title>Creating Bluetooth Apps</title>
+
+<body class="c11">
+<H1 class="Header">Using App Inventor with BlueZ</H1>
+<p class="c1"><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 237.09px; height: 154.50px;"><img alt="" src="../asset/AppInventor/image7.png" style="width: 237.09px; height: 154.50px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span><span>&nbsp; &nbsp; &nbsp; </span><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 304.50px; height: 164.02px;"><img alt="" src="../asset/AppInventor/image5.png" style="width: 304.50px; height: 164.02px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p><p class="c1 c4"><span class="c0"></span></p><p class="c1"><span class="c0">One of the great advantages of using Bluetooth is that it is right there on your mobile phone and many Linux Single Board Computers (SBC) so it is no surprise that people want to connect these two types of devices.</span></p><p class="c1"><span>For people with Android devices there is quick and simple way &nbsp;to create mobile phone apps using MIT&rsquo;s App Inventor </span><span class="c7"><a class="c5" href="https://www.google.com/url?q=http://appinventor.mit.edu/explore/&amp;sa=D&amp;ust=1494541617475000&amp;usg=AFQjCNFusx_kQYGtR24AUBrNto-eHW2zcA">http://appinventor.mit.edu/explore/</a></span><span class="c0">&nbsp;</span></p><p class="c1"><span class="c0">However by default SBC&rsquo;s do not support the required Bluetooth Profile.</span></p><p class="c1"><span class="c0">There are numerous different Profiles (or sometimes called services) a Bluetooth Classic device can use to communicate over the lower level Bluetooth protocols. These predefined profiles ensure both ends of the bluetooth link are talking the same dialect of Bluetooth. For interfacing with App Inventor your SBC needs to use the Serial Port Profile (SPP).</span></p><p class="c1"><span class="c0">This article will focus on using Python to set up the SBC as a Bluetooth Serial Port Profile server.</span></p><h1 class="c2" id="h.kn3xz6s4fadp"><span class="c3">Using Python to interface to Bluez</span></h1><p class="c1"><span class="c0">The low level Bluetooth configuration and communication on Linux is taken care of by BlueZ. There is an Application Programming Interface (API) defined for how to interact with BlueZ from your application code.</span></p><p class="c1"><span class="c0">The API uses the Linux DBus software communication bus. Not something we have to know too much about as there are some standard libraries around that we can use.</span></p><p class="c1"><span class="c0">We can install one for Python 3 as follows:</span></p><p class="c1 c12"><span class="c0">sudo apt-get install python3-dbus</span></p><h1 class="c2" id="h.ucpknneya2xp"><span class="c3">Serial Port Profile on the SBC</span></h1><p class="c1"><span class="c0">As I have mentioned previously, by default most SBC&rsquo;s does not have the SPP service defined by default so we have to tell the Bluetooth Daemon (bluetoothd) that we would like this service. </span></p><p class="c1"><span class="c0">We do this by defining a Python class with three methods (NewConnection, RequestDisconnection and Release) and then finally we need to tell the Bluetooth Daemon where our Python class is on the DBus Software Bus.</span></p><p class="c1 c4"><span class="c0"></span></p><p class="c1"><span class="c0">Firstly we have our &lsquo;library&rsquo; part of the code that will take care of creating the SPP and reading and writing the information. This should be base code that we can use over and over again.</span></p><p class="c1 c4"><span class="c0"></span></p>
+<pre>
+import os
+import dbus
+import dbus.service
+import dbus.mainloop.glib
+try:
+    from gi.repository import GObject
+except ImportError:
+    import gobject as GObject
+
+dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+
+bus = dbus.SystemBus()
+
+
+class Profile(dbus.service.Object):
+    fd = -1
+
+    def __init__(self, bus, path, read_cb):
+        self.read_io_cb = read_cb
+        dbus.service.Object.__init__(self, bus, path)
+
+    @dbus.service.method('org.bluez.Profile1',
+                         in_signature='',
+                         out_signature='')
+    def Release(self):
+        print('Release')
+        mainloop.quit()
+
+    @dbus.service.method('org.bluez.Profile1',
+                         in_signature='oha{sv}',
+                         out_signature='')
+    def NewConnection(self, path, fd, properties):
+        self.fd = fd.take()
+        print('NewConnection(%s, %d)' % (path, self.fd))
+        io_id = GObject.io_add_watch(self.fd,
+                                     GObject.PRIORITY_DEFAULT,
+                                     GObject.IO_IN | GObject.IO_PRI,
+                                     self.io_cb)
+
+
+    @dbus.service.method('org.bluez.Profile1',
+                         in_signature='o',
+                         out_signature='')
+    def RequestDisconnection(self, path):
+        print('RequestDisconnection(%s)' % (path))
+
+        if self.fd > 0:
+            os.close(self.fd)
+            self.fd = -1
+
+    def io_cb(self, fd, conditions):
+        data = os.read(fd, 1024)
+        self.read_io_cb('{0}'.format(data.decode('ascii')))
+        return True
+
+    def write_io(self, value):
+        os.write(self.fd, value.encode('utf8'))
+
+
+class SPP:
+
+    def __init__(self, read_cb):
+        self.profile = None
+        manager = dbus.Interface(bus.get_object('org.bluez',
+                                                '/org/bluez'),
+                                 'org.bluez.ProfileManager1')
+
+        self.mainloop = GObject.MainLoop()
+        adapter_props = dbus.Interface(bus.get_object('org.bluez', '/org/bluez/hci0'),
+                                       'org.freedesktop.DBus.Properties');
+
+        adapter_props.Set('org.bluez.Adapter1', 'Powered', dbus.Boolean(1))
+        profile_path = '/foo/bar/profile'
+        server_uuid = '00001101-0000-1000-8000-00805f9b34fb'
+        opts = {
+            'AutoConnect': True,
+            'Role': 'server',
+            'Channel': 1,
+            'Name': 'SerialPort'
+        }
+
+        print('Starting Serial Port Profile...')
+
+        if read_cb is None:
+            self.profile = Profile(bus, profile_path, self.read_cb)
+        else:
+            self.profile = Profile(bus, profile_path, read_cb)
+
+        manager.RegisterProfile(profile_path, server_uuid, opts)
+
+    def read_cb(self, value):
+        print(value)
+
+    def write_spp(self, value):
+        self.profile.write_io(value)
+
+    def fd_available(self):
+        if self.profile.fd > 0:
+            return True
+        else:
+            return False
+
+    def start(self):
+        self.mainloop.run()
+
+</pre>
+<h1>Bluetooth Pairing</h1>
+<p class="c1"><span class="c0">With Bluetooth Classic there is a need to pair your Android phone and the SBC. There are numerous ways this can be done. I&rsquo;m going to describe using bluetoothctl as this can be used even if your are running your SBC &lsquo;headless&rsquo; and don&rsquo;t have the full desktop environment.</span></p><p class="c1"><span class="c0">We are going to make the phone the &lsquo;master&rsquo; and so it will scan and discover the SBC. For this to happen we need to make the SBC discoverable and pairable.
+</span></p>
+
+<pre>
+
+$ bluetoothctl
+[bluetooth]# power on
+Changing power on succeeded
+[bluetooth]# agent KeyboardDisplay
+Agent registered
+[bluetooth]# default-agent
+Default agent request successful
+[bluetooth]# discoverable on
+Changing discoverable on succeeded
+[CHG] Controller B8:27:EB:22:57:E0 Discoverable: yes
+[bluetooth]# pairable on
+Changing pairable on succeeded
+[NEW] Device 64:BC:0C:F6:22:F8 Nexus 5X
+Request confirmation
+[agent] Confirm passkey 910035 (yes/no): yes
+</pre>
+<p>when you start the server this happens</p>
+<pre>
+Authorize service
+[agent] Authorize service 00001101-0000-1000-8000-00805f9b34fb (yes/no): yes
+[Nexus 5X]# trust
+[CHG] Device 64:BC:0C:F6:22:F8 Trusted: yes
+Changing  trust succeeded
+</pre>
+
+<h1 class="c2" id="h.44ovade3w7bo"><span class="c3">Your Python 3 Server Application</span></h1><p class="c1"><span class="c0">Below is a sample app that will be running on our SBC that will send the temperature of the cpu every 1 second to the phone when it is connected.</span></p><p class="c1"><span class="c0">Anything that is sent from the phone app to the SBC will be printed to the screen.</span></p><p class="c1 c4"><span class="c0"></span></p>
+
+<pre>
+#!/usr/bin/python3
+
+from gi.repository import GObject
+import os
+import spp_server
+
+
+def my_read_cb(value):
+    print('my callback: {}'.format(value))
+
+
+def my_write_cb(my_server):
+    cpu_temp = os.popen('vcgencmd measure_temp').readline()
+    if my_server.fd_available():
+        my_server.write_spp('{}'.format(float(cpu_temp.replace('temp=', '').replace("'C\n", ''))))
+        print('Sending: {}'.format(float(cpu_temp.replace('temp=', '').replace("'C\n", ''))))
+    return True
+
+if __name__ == '__main__':
+    my_spp_server = spp_server.SPP(my_read_cb)
+    GObject.timeout_add(1000, my_write_cb, my_spp_server)
+    my_spp_server.start()
+</pre>
+
+
+<h1 class="c2" id="h.bqeimdvg7ig4"><span class="c3">App Inventor simple app</span></h1><p class="c1"><span class="c0">There is a more detailed tutorial for creating App Inventor Bluetooth applications available at:</span></p><p class="c1"><span class="c7"><a class="c5" href="https://www.google.com/url?q=http://pevest.com/appinventor2/?p%3D520&amp;sa=D&amp;ust=1494541617491000&amp;usg=AFQjCNGA2hl65yhnmlxnvcqp4nmxbyagJw">http://pevest.com/appinventor2/?p=520</a></span></p><p class="c1"><span class="c0">Below I will outline the key pieces I have done for the various functions.</span></p><h2 class="c6" id="h.6fj59qodvnvb"><span class="c9">Designer Layout</span></h2><p class="c1"><span class="c0">We need to ensure we have the &ldquo;BluetoothClient1&rdquo; as this will give us access to the Bluetooth functional blocks that we need.</span></p><p class="c1"><span class="c0">The reading of incoming data will be done on a timer so we also need the &ldquo;Clock1&rdquo; component.</span></p><p class="c1"><span class="c0">We are going to add a label to display that status of the connection and any data received. There are buttons to disconnect from the SBC as well as a button to send the data from the text box.</span></p><p class="c1"><span class="c0">For the connect we will use a &ldquo;picker&rdquo; object so we can choose from the list of devices already connected.</span></p><p class="c1 c4"><span class="c0"></span></p><p class="c1"><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 624.00px; height: 528.00px;"><img alt="" src="../asset/AppInventor/image2.png" style="width: 624.00px; height: 528.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p><p class="c1 c4"><span class="c0"></span></p><p class="c1"><span class="c0">Now we have the basic layout of our app we can move on to putting the functionality behind the GUI</span></p><h2 class="c6" id="h.3owqudvxzm5d"><span class="c9">Selecting and Connecting</span></h2><p class="c1"><span class="c0">We will us two events on the picker. The &lsquo;BeforePicking&rsquo; is to populate the picker with the list of Bluetooth devices that are already paired with our phone.</span></p><p class="c1"><span class="c0">The &lsquo;AfterPicking&rsquo; event will try to connect to our selected device.</span></p><p class="c1"><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 624.00px; height: 185.33px;"><img alt="" src="../asset/AppInventor/image4.png" style="width: 624.00px; height: 185.33px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p><h2 class="c6" id="h.hz74v0v7guar"><span class="c9">Disconnecting</span></h2><p class="c1"><span class="c0">A simple button to disconnect from the SBC.</span></p><p class="c1"><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 324.00px; height: 104.00px;"><img alt="" src="../asset/AppInventor/image8.png" style="width: 324.00px; height: 104.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p><h2 class="c6" id="h.rydamyrm8hw2"><span class="c9">Sending Data</span></h2><p class="c1"><span class="c0">When we press the send button, check we are connected and if we are send the data from the text box</span></p><p class="c1"><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 481.00px; height: 156.00px;"><img alt="" src="../asset/AppInventor/image3.png" style="width: 481.00px; height: 156.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p><h2 class="c6" id="h.wv0m7tlcbhw4"><span class="c9">Receiving Data</span></h2><p class="c1"><span class="c0">This event will trigger every second. If we are connected and there is data to read then display it in the recTxt section. We we want to change how frequently this attempts to read then we need to go back to the designer page of App Inventor to change the properties of the Clock1 component.</span></p><p class="c1"><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 624.00px; height: 133.33px;"><img alt="" src="../asset/AppInventor/image6.png" style="width: 624.00px; height: 133.33px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p><h2 class="c6" id="h.ysqmimysup2q"><span class="c9">Status monitoring</span></h2><p class="c1"><span class="c0">Finally, we have created a component that we can call in each of the events above to update our status label.</span></p><p class="c1"><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 459.00px; height: 223.00px;"><img alt="" src="../asset/AppInventor/image1.png" style="width: 459.00px; height: 223.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);" title=""></span></p><p class="c1 c4"><span class="c0"></span></p><h1 class="c2" id="h.l0g6gil43wyc"><span class="c3">Connecting your phone and your SBC</span></h1><p class="c1"><span class="c0">OK, now we have our Python code running and we have our phone app connected we need to connect.</span></p><p class="c1"><span class="c0">The SBC should be sat there patiently waiting for a connection so on the phone launch your app and select connect. If you have successfully paired your phone earlier your SBC should be in the list.</span></p><p class="c1"><span class="c0">Once you select the device the connect should happen and you should see output in both your terminal window where you started the Python code and in the app.</span></p><p class="c1"><span class="c0">Now you can try sending some text from the phone and see if it appears on the SBC.</span></p><h1 class="c2" id="h.lcblx8n3duzy"><span class="c3">What Next</span></h1><p class="c1"><span class="c0">I&rsquo;ve tried to make this code very minimal to aid understanding. The downside of that is it is easy to get an error and for things to fall over so that is one area of improvement.</span></p><p class="c1"><span class="c0">The other obvious things is make things happen when the commands are sent. Turn LEDs on and off or even control a robot. This could be with buttons or using the sensors on your phone that App Inventor gives you access to.</span></p><p class="c1"><span class="c0">Going the other way, attach sensors to your SBC and send them to your phone. Maybe a moisture sensor for your favourite plant to see if it need watering?</span></p>
+<h2>license</h2>
+<footer>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="Creative Commons License" style="border-width:0"
+             src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
+    </a><br />
+    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+          property="dct:title" rel="dct:type">Using App Inventor with BlueZ
+    </span>
+    by
+    <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Barry Byford</span>
+    is licensed under a <br>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+
+    <p>First Published: 11-May-2017</p>
+</footer>
+
+</body></html>

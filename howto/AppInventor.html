@@ -64,7 +64,10 @@ class Profile(dbus.service.Object):
         return True
 
     def write_io(self, value):
-        os.write(self.fd, value.encode('utf8'))
+        try:
+            os.write(self.fd, value.encode('utf8'))
+        except ConnectionResetError:
+            self.fd = -1
 
 
 class SPP:

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="howto.css">
+    <meta charset="UTF-8">
+    <title>RPi <-> micro:bit Workshop</title>
+</head>
+<body>
+<div>
+    <h1>Micro:bit BLE from the Raspberry Pi</h1>
+</div>
+
+<div>
+    <h2>Overview</h2>
+    <p>
+        This is an introduction on how you can exchange information between a micro:bit and a Raspberry Pi.
+    </p>
+</div>
+<div>
+    <h2>Setting up the Raspberry Pi</h2>
+    <p>
+        We will need to install the Bluezero from Python Package Index (PyPI).
+        These instructions are targeted at a Raspberry Pi running a Raspbian Stretch release:<br>
+        <code>
+            sudo pip3 install bluezero
+        </code>
+    </p>
+    <h2>Setting Up the micro:bit</h2>
+    <p>
+        We will download the hex file from the Bitty Software website. The hex file is available at:<br>
+        <a href="https://www.bittysoftware.com/downloads.html#bitty_blue">https://www.bittysoftware.com/downloads.html#bitty_blue</a>
+    </p>
+    <p>
+        We will use the “no pairing required” hex file<br>
+        <img alt="" src="../asset/ubit_workshop/bitty_blue.png">
+    </p>
+    <p>
+        The first time the micro:bit is powered up you will need to rotate it so a circle is drawn on the micro:bit.
+        Once this is done we are ready to pair it with the Raspberry Pi
+    </p>
+</div>
+<div>
+    <h2>Bluetooth pairing</h2>
+    <p>
+        If this is the first time this combination of Raspberry Pi and micro:bit have been used together then you will
+        need to ensure the micro:bit is in the list of known Bluetooth devices on the Raspberry Pi.
+    </p>
+    <h2>Pairing the Raspberry Pi with the micro:bit</h2>
+    <p>
+        Before we can do any Python programming to connect to the micro:bit we need search and connect to it so that
+        it is in the known device list.
+    </p>
+    <blockquote>
+        Note: there is ‘tab’ command completion available within the bluetoothctl tool.
+    </blockquote>
+    <blockquote>
+        Note: The address of your Raspberry Pi and micro:bit will be different so they are represented in this tutorial
+        as xx:xx:xx:xx:xx:xx and yy:yy:yy:yy:yy:yy respectively
+        Using bluetoothctl
+    </blockquote>
+    <p>
+        We will use the command line tool “bluetoothctl” to do this pairing.<br>
+        Launch:<br>
+        <code>
+            $ <mark>bluetoothctl</mark>
+        </code>
+    </p>
+    <p>
+    And you will get you the new prompt:<br>
+        <code>
+            [bluetooth]#
+        </code>
+    </p>
+    <p>
+    You can type help to get a full list of the commands.
+        Check that you have <code>Powered: yes</code> when you type <mark><code>show</code></mark>.
+    <pre>
+Controller xx:xx:xx:xx:xx:xx
+	Name: raspberrypi
+	Alias: raspberrypi
+	Class: 0x000000
+	Powered: yes
+	Discoverable: no
+	Pairable: yes
+	UUID: Generic Attribute Profile (00001801-0000-1000-8000-00805f9b34fb)
+	UUID: A/V Remote Control        (0000110e-0000-1000-8000-00805f9b34fb)
+	UUID: PnP Information           (00001200-0000-1000-8000-00805f9b34fb)
+	UUID: Generic Access Profile    (00001800-0000-1000-8000-00805f9b34fb)
+	UUID: A/V Remote Control Target (0000110c-0000-1000-8000-00805f9b34fb)
+	Modalias: usb:v1D6Bp0246d052E
+	Discovering: no
+</pre>
+    <p>
+        If it is powered not yes then type <code>power on</code>
+    </p>
+    <p>
+        Make a note of the controller address as you will need it later
+    </p>
+    <h3>Scan for micro:bit</h3>
+        <p>
+    You will need to get bluetoothctl to search for micro:bits that are close by.<br>
+        When you see your micro:bit you can stop the search.
+        </p>
+<pre>
+[bluetooth]# <mark>scan on</mark>
+Discovery started
+[CHG] Controller xx:xx:xx:xx:xx:xx Discovering: yes
+[NEW] Device yy:yy:yy:yy:yy:yy BBC micro:bit [?????]
+[bluetooth]# <mark>scan off</mark>
+</pre>
+
+    <h3>Connect to micro:bit</h3>
+    <p>
+We need to specify the Bluetooth address of the micro:bit we want to connect to. Once it has connected because we have used “no pairing required” hex file the micro:bit will become part of the known (or paired) devices so we can disconnect.
+    </p>
+    <pre>
+[bluetooth]# <mark>connect yy:yy:yy:yy:yy:yy</mark>
+Attempting to connect to yy:yy:yy:yy:yy:yy
+[CHG] Device yy:yy:yy:yy:yy:yy Connected: yes
+Connection successful
+[BBC micro:bit [?????]]# <mark>disconnect</mark>
+    </pre>
+
+    <p>
+        And we are done with bluetoothctl so we can type <code><mark>exit</mark></code>
+    </p>
+
+</div>
+<div>
+    <h2>Using Python with Bluezero Library</h2>
+    <h3>Sending a message to the micro:bit</h3>
+<p>
+    This first Python example is to send text to display on the micro:bit.
+</p>
+    <pre>
+from bluezero import microbit
+ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
+                         device_addr='yy:yy:yy:yy:yy:yy')
+My_text = 'Hello, world'
+ubit.connect()
+
+While my_text is not '':
+    ubit.display_text(my_text)
+    my_text = input('Enter message: ')
+
+ubit.disconnect()
+    </pre>
+    <h3>Reading a button press</h3>
+    <p>Display an image of which button needs pressing</p>
+    <pre>
+from bluezero import microbit
+ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
+                         device_addr='yy:yy:yy:yy:yy:yy')
+ubit.connect()
+while ubit.read_button_a() < 1:
+    ubit.display_pixels(0b00000,
+                        0b01000,
+                        0b11111,
+                        0b01000,
+                        0b00000)
+    time.sleep(0.5)
+    ubit.display_clear()
+
+while ubit.read_button_b() < 1:
+    ubit.display_pixels(0b00000,
+                        0b00010,
+                        0b11111,
+                        0b00010,
+                        0b00000)
+    time.sleep(0.5)
+    ubit.display_clear()
+
+ubit.disconnect()
+
+    </pre>
+
+    <h3>Using micro:bit to control Turtle</h3>
+    <p>
+        This last exercise uses information from the micro:bit sensors to control the Turtle graphics<br>
+        Pressing Button A uses the magnetometer to rotate to the Turtle<br>
+        Pressing Button B exits the code<br>
+        With no buttons pressed you can move the Turtle forwards and backwards by tilting the micro:bit
+    </p>
+    <pre>
+import turtle
+from time import sleep
+from bluezero import microbit
+oogway = turtle.Turtle()
+ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
+                         device_addr='yy:yy:yy:yy:yy:yy')
+looping = True
+ubit.connect()
+oogway.write('Ready')
+
+while looping:
+    if ubit.read_button_a() > 0:
+        oogway.setheading(ubit.read_bearing())
+        sleep(.25)
+    elif ubit.read_button_b() > 0:
+        ubit.display_pixels(0b10001,
+                            0b10001,
+                            0b01110,
+                            0b10001,
+                            0b10001)
+        oogway.write('Exit')
+        looping = False
+    else:
+        x, y, z = ubit.read_accelerometer()
+        if y > 0.5:
+            oogway.backward(10)
+        if y < -0.5:
+            oogway.forward(10)
+
+ubit.disconnect()
+
+    </pre>
+</div>
+<h2>license</h2>
+<footer>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="Creative Commons License" style="border-width:0"
+             src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
+    </a><br />
+    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+          property="dct:title" rel="dct:type">Basic bitbot
+    </span>
+    by
+    <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Barry Byford</span>
+    is licensed under a <br>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    <br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/"
+                                href="https://gist.github.com/ukBaz/eef3d420e5e04330649f637b1df63425" rel="dct:source">
+    https://gist.github.com/ukBaz/eef3d420e5e04330649f637b1df63425</a>.
+    <p>First Published: 26-August-2017</p>
+</footer>
+</body>
+</html>

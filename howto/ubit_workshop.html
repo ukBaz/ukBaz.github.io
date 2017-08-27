@@ -13,13 +13,14 @@
 <div>
     <h2>Overview</h2>
     <p>
-        This is an introduction on how you can exchange information between a micro:bit and a Raspberry Pi.
+        This is an introduction on how you can exchange information between a micro:bit and a Raspberry Pi using
+        Bluetooth Low Engergy (BLE).
     </p>
 </div>
 <div>
     <h2>Setting up the Raspberry Pi</h2>
     <p>
-        We will need to install the Bluezero from Python Package Index (PyPI).
+        You will need to install the Bluezero package from Python Package Index (PyPI).
         These instructions are targeted at a Raspberry Pi running a Raspbian Stretch release:<br>
         <code>
             sudo pip3 install bluezero
@@ -27,61 +28,60 @@
     </p>
     <h2>Setting Up the micro:bit</h2>
     <p>
-        We will download the hex file from the Bitty Software website. The hex file is available at:<br>
+        You will download the hex file from the Bitty Software website. The hex file is available at:<br>
         <a href="https://www.bittysoftware.com/downloads.html#bitty_blue">https://www.bittysoftware.com/downloads.html#bitty_blue</a>
     </p>
     <p>
-        We will use the “no pairing required” hex file<br>
+        You will use the “no pairing required” hex file<br>
         <img alt="" src="../asset/ubit_workshop/bitty_blue.png">
     </p>
     <p>
         The first time the micro:bit is powered up you will need to rotate it so a circle is drawn on the micro:bit.
-        Once this is done we are ready to pair it with the Raspberry Pi
+        Once this is done you are ready to connect to it with the Raspberry Pi
     </p>
 </div>
 <div>
-    <h2>Bluetooth pairing</h2>
+    <h2>Finding the micro:bit </h2>
     <p>
         If this is the first time this combination of Raspberry Pi and micro:bit have been used together then you will
-        need to ensure the micro:bit is in the list of known Bluetooth devices on the Raspberry Pi.
-    </p>
-    <h2>Pairing the Raspberry Pi with the micro:bit</h2>
-    <p>
-        Before we can do any Python programming to connect to the micro:bit we need search and connect to it so that
-        it is in the known device list.
+        need to ensure the micro:bit is in the list of known Bluetooth devices on the Raspberry Pi. You will do this
+        using bluetoothctl.
     </p>
     <blockquote>
-        Note: there is ‘tab’ command completion available within the bluetoothctl tool.
+        Note: There is ‘tab’ command completion on commands and addresses available within the bluetoothctl tool.
     </blockquote>
     <blockquote>
-        Note: The address of your Raspberry Pi and micro:bit will be different so they are represented in this tutorial
-        as xx:xx:xx:xx:xx:xx and yy:yy:yy:yy:yy:yy respectively
+        Note: As Bluetooth addresses are unique this workshop uses the representation of your Raspberry Pi and
+        micro:bit address as xx:xx:xx:xx:xx:xx and yy:yy:yy:yy:yy:yy respectively. Please replace these
+        with the actual address of your devices
     </blockquote>
     <h3>Using bluetoothctl</h3>
     <p>
-        We will use the command line tool “bluetoothctl” to do this pairing.<br>
-        Launch:<br>
+        You will use the command line tool “bluetoothctl” to discover our micro:bit.<br>
+        On the terminal command line type:<br>
         <code>
             $ <mark>bluetoothctl</mark>
         </code>
     </p>
     <p>
-    And you will get you the new prompt:<br>
+    You will then get the new prompt:<br>
         <code>
             [bluetooth]#
         </code>
     </p>
     <p>
-    You can type help to get a full list of the commands.
-        Check that you have <code>Powered: yes</code> when you type <mark><code>show</code></mark>.
+        You can type help to get a full list of the commands.<br>
+        Check that the Bluetooth is switched on on the Raspberry Pi<br>
+        Type <mark><code>show</code></mark> and check that you have <code>Powered: yes</code>.
+    </p>
     <pre>
 Controller xx:xx:xx:xx:xx:xx
 	Name: raspberrypi
 	Alias: raspberrypi
 	Class: 0x000000
-	Powered: yes
+	<mark>Powered: yes</mark>
 	Discoverable: no
-	Pairable: yes
+        Pairable: yes
 	UUID: Generic Attribute Profile (00001801-0000-1000-8000-00805f9b34fb)
 	UUID: A/V Remote Control        (0000110e-0000-1000-8000-00805f9b34fb)
 	UUID: PnP Information           (00001200-0000-1000-8000-00805f9b34fb)
@@ -91,16 +91,16 @@ Controller xx:xx:xx:xx:xx:xx
 	Discovering: no
 </pre>
     <p>
-        If it is powered not yes then type <code>power on</code>
+        If it is powered not is not set to yes then type <code>power on</code>
     </p>
     <p>
         Make a note of the controller address as you will need it later
     </p>
     <h3>Scan for micro:bit</h3>
-        <p>
-    You will need to get bluetoothctl to search for micro:bits that are close by.<br>
+    <p>
+        You will need to get bluetoothctl to search for micro:bits that are close by.<br>
         When you see your micro:bit you can stop the search.
-        </p>
+    </p>
 <pre>
 [bluetooth]# <mark>scan on</mark>
 Discovery started
@@ -111,7 +111,11 @@ Discovery started
 
     <h3>Connect to micro:bit</h3>
     <p>
-We need to specify the Bluetooth address of the micro:bit we want to connect to. Once it has connected because we have used “no pairing required” hex file the micro:bit will become part of the known (or paired) devices so we can disconnect.
+        You need to specify the Bluetooth address of your micro:bit (found with the above command) to connect to it.<br>
+        Because you have used the “no pairing required” hex file the micro:bit will become part
+        of the known devices once it has been connected to and allow you to easily access
+        it from the Python code<br>
+        Once connection has happened and a "C" appears on the micro:bit you can disconnect.
     </p>
     <pre>
 [bluetooth]# <mark>connect yy:yy:yy:yy:yy:yy</mark>
@@ -122,7 +126,10 @@ Connection successful
     </pre>
 
     <p>
-        And we are done with bluetoothctl so we can type <code><mark>exit</mark></code>
+        If you want to check the micro:bit has been added to the devices list then type <code>devices</code>
+    </p>
+    <p>
+        You have finished with bluetoothctl so type <code><mark>exit</mark></code>
     </p>
 
 </div>
@@ -130,13 +137,13 @@ Connection successful
     <h2>Using Python with Bluezero Library</h2>
     <h3>Sending a message to the micro:bit</h3>
 <p>
-    This first Python example is to send text to display on the micro:bit.
+    This first Python exercise is to send text to display on the micro:bit.
 </p>
     <pre>
 from bluezero import microbit
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
                          device_addr='yy:yy:yy:yy:yy:yy')
-My_text = 'Hello, world'
+my_text = 'Hello, world'
 ubit.connect()
 
 While my_text is not '':
@@ -145,8 +152,10 @@ While my_text is not '':
 
 ubit.disconnect()
     </pre>
+
+
     <h3>Reading a button press</h3>
-    <p>Display an image of which button needs pressing</p>
+    <p>Display an image of which button needs pressing to break out of the loop</p>
     <pre>
 from bluezero import microbit
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
@@ -176,10 +185,15 @@ ubit.disconnect()
 
     <h3>Using micro:bit to control Turtle</h3>
     <p>
-        This last exercise uses information from the micro:bit sensors to control the Turtle graphics<br>
-        Pressing Button A uses the magnetometer to rotate to the Turtle<br>
-        Pressing Button B exits the code<br>
-        With no buttons pressed you can move the Turtle forwards and backwards by tilting the micro:bit
+        This last exercise uses information from the micro:bit sensors to control the Turtle graphics
+    </p>
+    <ul>
+        <li>Pressing Button A uses the magnetometer "heading" value to rotate to the Turtle as you rotate the micro:bit</li>
+        <li>Pressing Button B exits the code</li>
+        <li>With no buttons pressed you can move the Turtle forwards and backwards by tilting the micro:bit</li>
+    </ul>
+
+
     </p>
     <pre>
 import turtle

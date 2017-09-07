@@ -7,7 +7,7 @@
 </head>
 <body>
 <div>
-    <h1>Micro:bit BLE from the Raspberry Pi</h1>
+    <h1>micro:bit BLE from the Raspberry Pi</h1>
 </div>
 
 <div>
@@ -147,8 +147,8 @@ ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
 my_text = 'Hello, world'
 ubit.connect()
 
-While my_text is not '':
-    ubit.display_text(my_text)
+while my_text is not '':
+    ubit.text = my_text
     my_text = input('Enter message: ')
 
 ubit.disconnect()
@@ -158,27 +158,28 @@ ubit.disconnect()
     <h3>Reading a button press</h3>
     <p>Display an image of which button needs pressing to break out of the loop</p>
     <pre>
+import time
 from bluezero import microbit
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
                          device_addr='yy:yy:yy:yy:yy:yy')
 ubit.connect()
-while ubit.read_button_a() < 1:
-    ubit.display_pixels(0b00000,
-                        0b01000,
-                        0b11111,
-                        0b01000,
-                        0b00000)
+while ubit.button_a < 1:
+    ubit.pixels = [0b00000,
+                   0b01000,
+                   0b11111,
+                   0b01000,
+                   0b00000]
     time.sleep(0.5)
-    ubit.display_clear()
+    ubit.clear_display()
 
-while ubit.read_button_b() < 1:
-    ubit.display_pixels(0b00000,
-                        0b00010,
-                        0b11111,
-                        0b00010,
-                        0b00000)
+while ubit.button_b < 1:
+    ubit.pixels = [0b00000,
+                   0b00010,
+                   0b11111,
+                   0b00010,
+                   0b00000]
     time.sleep(0.5)
-    ubit.display_clear()
+    ubit.clear_display()
 
 ubit.disconnect()
 
@@ -198,7 +199,7 @@ ubit.disconnect()
     </p>
     <pre>
 import turtle
-from time import sleep
+import time
 from bluezero import microbit
 oogway = turtle.Turtle()
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
@@ -208,19 +209,19 @@ ubit.connect()
 oogway.write('Ready')
 
 while looping:
-    if ubit.read_button_a() > 0:
-        oogway.setheading(ubit.read_bearing())
-        sleep(.25)
-    elif ubit.read_button_b() > 0:
-        ubit.display_pixels(0b10001,
-                            0b10001,
-                            0b01110,
-                            0b10001,
-                            0b10001)
+    if ubit.button_a > 0:
+        oogway.setheading(ubit.bearing)
+        time.sleep(0.25)
+    elif ubit.button_b > 0:
+        ubit.pixels = [0b10001,
+                       0b10001,
+                       0b01110,
+                       0b10001,
+                       0b10001]
         oogway.write('Exit')
         looping = False
     else:
-        x, y, z = ubit.read_accelerometer()
+        x, y, z = ubit.accelerometer
         if y > 0.5:
             oogway.backward(10)
         if y < -0.5:
@@ -238,17 +239,18 @@ turtle.bye()
              src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
     </a><br />
     <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
-          property="dct:title" rel="dct:type">Basic bitbot
+          property="dct:title" rel="dct:type">micro:bit BLE workshop
     </span>
     by
     <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Barry Byford</span>
     is licensed under a <br>
     <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
         Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-    <br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/"
+    <br />Based on work at <a xmlns:dct="http://purl.org/dc/terms/"
                                 href="https://github.com/ukBaz/python-bluezero" rel="dct:source">
     https://github.com/ukBaz/python-bluezero</a>.
     <p>First Published: 26-August-2017</p>
+    <p>Updated: 7-September-2017 to match Bluezero v:0.0.5</p>
 </footer>
 </body>
 </html>

@@ -1,0 +1,112 @@
+Connecting to a Bluetooth Speaker
+
+Pairing
+pi@RPi3:~ $ bluetoothctl 
+[bluetooth]# agent on
+Agent registered
+[bluetooth]# scan on
+Discovery started
+[CHG] Controller B8:27:EB:22:57:E0 Discovering: yes
+[NEW] Device 50:C9:71:67:41:CD Jabra SOLEMATE v1.27.0
+[bluetooth]# scan off
+[CHG] Device 50:C9:71:67:41:CD RSSI is nil
+[CHG] Controller B8:27:EB:22:57:E0 Discovering: no
+Discovery stopped
+[bluetooth]# pair 50:C9:71:67:41:CD 
+Attempting to pair with 50:C9:71:67:41:CD
+[CHG] Device 50:C9:71:67:41:CD Connected: yes
+[CHG] Device 50:C9:71:67:41:CD Modalias: usb:v0B0EpABCDd011B
+[CHG] Device 50:C9:71:67:41:CD UUIDs: 00001108-0000-1000-8000-00805f9b34fb
+[CHG] Device 50:C9:71:67:41:CD UUIDs: 0000110b-0000-1000-8000-00805f9b34fb
+[CHG] Device 50:C9:71:67:41:CD UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Device 50:C9:71:67:41:CD UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Device 50:C9:71:67:41:CD UUIDs: 0000111e-0000-1000-8000-00805f9b34fb
+[CHG] Device 50:C9:71:67:41:CD UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+[CHG] Device 50:C9:71:67:41:CD ServicesResolved: yes
+[CHG] Device 50:C9:71:67:41:CD Paired: yes
+Pairing successful
+[CHG] Device 50:C9:71:67:41:CD ServicesResolved: no
+[CHG] Device 50:C9:71:67:41:CD Connected: no
+[bluetooth]# trust 50:C9:71:67:41:CD 
+[CHG] Device 50:C9:71:67:41:CD Trusted: yes
+Changing 50:C9:71:67:41:CD trust succeeded
+[bluetooth]# connect 50:C9:71:67:41:CD 
+Attempting to connect to 50:C9:71:67:41:CD
+[CHG] Device 50:C9:71:67:41:CD Connected: yes
+Connection successful
+[CHG] Device 50:C9:71:67:41:CD ServicesResolved: yes
+
+Now we have paired and saidt hat we trust the device, just turning on the Bluetooth
+speaker automatically connects to the Raspberry Pi.
+
+To access the audio device we need to put the details in a file called ".asoundrc" in
+your home directory. e.g. ~/.asoundrc
+More documentation at: https://www.alsa-project.org/main/index.php/Asoundrc
+For this example the details are:
+
+defaults.bluealsa.interface "hci0"
+defaults.bluealsa.device "50:C9:71:67:41:CD"
+defaults.bluealsa.profile "a2dp"
+defaults.bluealsa.delay 10000
+
+Playing a sound over Bluetooth
+aplay -D bluealsa /usr/share/scratch/Media/Sounds/Animal/Crickets.wav 
+
+
+
+Using Raspberry Pi as a Bluetooth Speaker
+
+pi@RPi3:~ $ bluetoothctl 
+[bluetooth]# agent NoInputNoOutput
+Agent registered
+[bluetooth]# discoverable on
+Changing discoverable on succeeded
+[CHG] Controller B8:27:EB:22:57:E0 Discoverable: yes
+[bluetooth]# discoverable on
+Changing discoverable on succeeded
+[CHG] Controller B8:27:EB:22:57:E0 Discoverable: yes
+[NEW] Device 64:BC:0C:F6:22:F8 Nexus 5X
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000111f-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 Modalias: bluetooth:v000Fp1200d1436
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110a-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001112-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001115-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001116-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000111f-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000112d-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 ServicesResolved: yes
+[CHG] Device 64:BC:0C:F6:22:F8 Paired: yes
+[CHG] Device 64:BC:0C:F6:22:F8 ServicesResolved: no
+[CHG] Device 64:BC:0C:F6:22:F8 Connected: no
+[CHG] Device 64:BC:0C:F6:22:F8 Connected: yes
+[Nexus 5X]# trust 64:BC:0C:F6:22:F8 
+[CHG] Device 64:BC:0C:F6:22:F8 Trusted: yes
+Changing 64:BC:0C:F6:22:F8 trust succeeded
+[CHG] Device 64:BC:0C:F6:22:F8 Connected: no
+[CHG] Device 64:BC:0C:F6:22:F8 Connected: yes
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110a-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110d-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001112-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001115-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001116-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000111f-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000112d-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+[CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+[CHG] Controller B8:27:EB:22:57:E0 Discoverable: no
+[CHG] Device 64:BC:0C:F6:22:F8 Connected: no
+[CHG] Device 64:BC:0C:F6:22:F8 Connected: yes

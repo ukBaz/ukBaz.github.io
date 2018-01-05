@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="howto.css">
+    <meta charset="UTF-8">
+    <title>RPi Bluetooth Audio Sink/Source</title>
+</head>
+<body>
+<div>
+    <h1>Bluetooth Speakers</h1>
+</div>
+
+<div>
+    <h2>Overview</h2>
+    <P>
+        I often want to look at using my Raspberry Pi with Bluetooth audio. I normally run my RPi without a desktop
+        environment so those graphical tools aren't available to me easily. This got me wondering if I could do Bluetooth
+        audio from the commandline. I have started to some investigation into how this works. This HowTo is me capturing
+        my notes as I go and will hopefully be improved over time and maybe even extend to doing it with Python.
+    </P>
+    <p>
+        This is done with the Bluetooth Advance Audio Distribution Profile (A2DP) which has a Source and Sink option.
+
+    </p>
+
+<h2>Understanding UUID's</h2>
+    <p>
+        Bluetooth profiles and services are referred to by Universally Unique Identifier (UUID).
+        These take the form of 128-bit hexadecimal numbers and normally formated as sequence of 32 hex digits grouped
+        in groups of 8-4-4-4-12 e.g. 00000000-0000-1000-8000-00805F9B34FB<br>
+        This can be rather cumbersome when documenting things so for officially adopted UUID's they can be
+        documented is a short form (or 16-bit UUIDs). <br>
+        The 16-bit UUID is placed with the base 128-bit UUID 0000xxxx-0000-1000-8000-00805F9B34FB<br>
+        In this HowTo you will see UUIDs in both their 128-bit and 16-bit form.
+    </p>
+    <p>
+        As a side note, this means if you are creating your own services or characteristics the you should avoid the reserved range of
+        xxxxxxxx-0000-1000-8000-00805F9B34FB but I digress...
+    </p>
+</div>
+<h2>Sending Audio (Audio Source - 0x110A)</h2>
+<p>
+    The first experiment I did was to use a Raspberry Pi 3 as a source connecting to a Jabra Solemate Bluetooth speaker.
+
+</p>
+<h3>Transcript of session</h3>
+<pre>
+    pi@RPi3:~ $ <mark>bluetoothctl </mark>
+    [bluetooth]# <mark>agent on</mark>
+    Agent registered
+    [bluetooth]# <mark>scan on</mark>
+    Discovery started
+    [CHG] Controller B8:27:EB:22:57:E0 Discovering: yes
+    [NEW] Device 50:C9:71:67:41:CD Jabra SOLEMATE v1.27.0
+    [bluetooth]# <mark>scan off</mark>
+    [CHG] Controller B8:27:EB:22:57:E0 Discovering: no
+    Discovery stopped
+    [bluetooth]# <mark>pair 50:C9:71:67:41:CD</mark>
+    Attempting to pair with 50:C9:71:67:41:CD
+    [CHG] Device 50:C9:71:67:41:CD Connected: yes
+    [CHG] Device 50:C9:71:67:41:CD Modalias: usb:v0B0EpABCDd011B
+    [CHG] Device 50:C9:71:67:41:CD UUIDs: 00001108-0000-1000-8000-00805f9b34fb
+    [CHG] Device 50:C9:71:67:41:CD UUIDs: 0000110b-0000-1000-8000-00805f9b34fb
+    [CHG] Device 50:C9:71:67:41:CD UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+    [CHG] Device 50:C9:71:67:41:CD UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+    [CHG] Device 50:C9:71:67:41:CD UUIDs: 0000111e-0000-1000-8000-00805f9b34fb
+    [CHG] Device 50:C9:71:67:41:CD UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+    [CHG] Device 50:C9:71:67:41:CD ServicesResolved: yes
+    [CHG] Device 50:C9:71:67:41:CD Paired: yes
+    Pairing successful
+    [CHG] Device 50:C9:71:67:41:CD ServicesResolved: no
+    [CHG] Device 50:C9:71:67:41:CD Connected: no
+    [bluetooth]# <mark>trust 50:C9:71:67:41:CD</mark>
+    [CHG] Device 50:C9:71:67:41:CD Trusted: yes
+    Changing 50:C9:71:67:41:CD trust succeeded
+    [bluetooth]# <mark>connect 50:C9:71:67:41:CD </mark>
+    Attempting to connect to 50:C9:71:67:41:CD
+    [CHG] Device 50:C9:71:67:41:CD Connected: yes
+    Connection successful
+    [CHG] Device 50:C9:71:67:41:CD ServicesResolved: yes
+</pre>
+<p>
+    Now we have paired and said that we trust the device, just turning on the Bluetooth
+    speaker automatically connects to the Raspberry Pi.
+</p>
+<p>
+    To access the audio device we need to put the details in a file called ".asoundrc" in
+your home directory. e.g. ~/.asoundrc<br>
+More documentation at: <a href="https://www.alsa-project.org/main/index.php/Asoundrc">https://www.alsa-project.org/main/index.php/Asoundrc</a><br>
+For this example the details are:
+
+</p>
+<pre>
+    defaults.bluealsa.interface "hci0"
+    defaults.bluealsa.device "50:C9:71:67:41:CD"
+    defaults.bluealsa.profile "a2dp"
+    defaults.bluealsa.delay 10000
+
+</pre>
+<p>
+    We can play a sound over Bluetooth from the commandline with:
+</p>
+<pre>
+    aplay -D bluealsa /usr/share/scratch/Media/Sounds/Animal/Crickets.wav
+</pre>
+
+<h2>Receiving Audio (Audio Sink - 0x110B)</h2>
+<p>
+    The second experiment I did was to use a Raspberry Pi 3 as a Bluetooth speaker. For this I connected a normal speaker
+    to the 3.5mm audio connector and used an Android phone as the audio source.
+
+</p>
+<h3>Transcript of Session</h3>
+<pre>
+    pi@RPi3:~ $ <mark>bluetoothctl </mark>
+    [bluetooth]# <mark>agent NoInputNoOutput</mark>
+    Agent registered
+    [bluetooth]# discoverable on
+    Changing discoverable on succeeded
+    [CHG] Controller B8:27:EB:22:57:E0 Discoverable: yes
+</pre>
+<p>
+    Now we have made the Raspberry Pi discoverable we can pair with it from the mobile phone
+</p>
+
+<pre>
+    [NEW] Device 64:BC:0C:F6:22:F8 Nexus 5X
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000111f-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 Modalias: bluetooth:v000Fp1200d1436
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110a-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001112-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001115-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001116-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000111f-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000112d-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 ServicesResolved: yes
+    [CHG] Device 64:BC:0C:F6:22:F8 Paired: yes
+    [CHG] Device 64:BC:0C:F6:22:F8 ServicesResolved: no
+    [CHG] Device 64:BC:0C:F6:22:F8 Connected: no
+    [CHG] Device 64:BC:0C:F6:22:F8 Connected: yes
+    [Nexus 5X]# <mark>trust 64:BC:0C:F6:22:F8 </mark>
+    [CHG] Device 64:BC:0C:F6:22:F8 Trusted: yes
+    Changing 64:BC:0C:F6:22:F8 trust succeeded
+</pre>
+
+<p>
+    We can now connect to the Raspberry Pi from the mobile phone and start playing the audio
+</p>
+
+<pre>
+    [CHG] Device 64:BC:0C:F6:22:F8 Connected: no
+    [CHG] Device 64:BC:0C:F6:22:F8 Connected: yes
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001105-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110a-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110d-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001112-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001115-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001116-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000111f-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000112d-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 0000112f-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001132-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001200-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001800-0000-1000-8000-00805f9b34fb
+    [CHG] Device 64:BC:0C:F6:22:F8 UUIDs: 00001801-0000-1000-8000-00805f9b34fb
+    [CHG] Controller B8:27:EB:22:57:E0 Discoverable: no
+    [CHG] Device 64:BC:0C:F6:22:F8 Connected: no
+    [CHG] Device 64:BC:0C:F6:22:F8 Connected: yes
+</pre>
+
+<p>
+    Next the Bluetooth audio-in needs to be routed to the speaker that is attached. This can be done with the following
+    command:
+</p>
+<pre>
+    bluealsa-aplay 64:BC:0C:F6:22:F8
+</pre>
+<p>
+    The results of this were... disappointing. The audio was cutting out very frequently. A little bit of research shows
+    this is a know issue which you can find more out about at:<br>
+    <a href="https://github.com/Arkq/bluez-alsa/issues/60">https://github.com/Arkq/bluez-alsa/issues/60</a><br>
+    <a href="https://github.com/raspberrypi/linux/issues/1552">https://github.com/raspberrypi/linux/issues/1552</a><br>
+</p>
+<p>
+    For those that don't want to read the long issues on this the summary seems to be
+<blockquote>
+    it is a problem with Raspberry Pi firmware. Wifi and BT do not coexist very well
+</blockquote>
+</p>
+
+<h2>Summary</h2>
+<p>
+    This was not the exciting result I had hoped for coming into this. Time to park this for a while and see if it gets
+    sorted out in the mean time...
+</p>
+
+<h2>license</h2>
+<footer>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="Creative Commons License" style="border-width:0"
+             src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
+    </a><br />
+    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+          property="dct:title" rel="dct:type">This HowTo
+    </span>
+    by
+    <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Barry Byford</span>
+    is licensed under a <br>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    <br />Based on work at <a xmlns:dct="http://purl.org/dc/terms/"
+                                href="https://github.com/ukBaz/python-bluezero" rel="dct:source">
+    https://github.com/ukBaz/python-bluezero</a>.
+    <p>First Published: 2018-01-05</p>
+</footer>
+</body>
+</html>

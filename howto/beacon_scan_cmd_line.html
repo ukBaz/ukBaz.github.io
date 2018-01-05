@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="howto.css">
+    <meta charset="UTF-8">
+    <title>Scanning for Beacons on the Linux command line</title>
+</head>
+<body>
+<h1>Scanning for Bluetooth Beacons on the Linux command line</h1>
+<h2>Overview</h2>
+<p>
+    Small Single Board Computers (SBC) such as Raspberry Pi 3 (RPi3) with their built in BLE 4.0 controllers are enough
+    to scan for Bluetooth Low Engery beacons such as those that use the <a href="https://github.com/google/eddystone">
+    Eddystone</a> format beacons.<br>
+    BlueZ however is not so keen on scanning for beacons as there is a concern that such activity is quite resource
+    intensive.<br>
+    Many tutorials on the internet are done with command line tools such as hcitool and hcidump. These tools have been
+    deprecated by the BlueZ project. This 'HowTo' looks at how to scan for beacons without using those tools.
+</p>
+
+<h2>Scanning for Beacons</h2>
+<p>
+In a  terminal use the BlueZ command line tool to put the RPi3 into scanning mode by issuing the `scan on` command.
+    It is also a good idea to clear all filtering options. My session looked like this:
+
+<pre>
+pi@RPi3:~ $ bluetoothctl
+[bluetooth]# set-scan-filter-clear
+SetDiscoveryFilter success
+[bluetooth]# scan on
+Discovery started
+[CHG] Controller B8:27:EB:22:57:E0 Discovering: yes
+[CHG] Device F1:55:90:65:29:DC RSSI: -55
+[CHG] Device F1:55:90:65:29:DC ServiceData Key: 0000<mark>feaa</mark>-0000-1000-8000-00805f9b34fb
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0xf6
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x21
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x09
+[bluetooth]# scan off
+
+</pre>
+    The 16-bit <a href="https://www.bluetooth.com/specifications/assigned-numbers/16-bit-uuids-for-members?_ga=2.105995968.2115520943.1514979233-967253953.1449700706"> Eddystone Service UUID</a> is 0xfeaa.
+Once we know the Service UUID we can filter to see just Eddystone beacons in bluetoothctl. For example:
+<pre>
+[bluetooth]# set-scan-filter-uuids 0xfeaa
+SetDiscoveryFilter success
+[bluetooth]# scan on
+Discovery started
+[CHG] Controller B8:27:EB:22:57:E0 Discovering: yes
+[CHG] Device F1:55:90:65:29:DC RSSI: -76
+[CHG] Device F1:55:90:65:29:DC RSSI: -78
+[CHG] Device F1:55:90:65:29:DC ServiceData Key: 0000feaa-0000-1000-8000-00805f9b34fb
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0xf6
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x21
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x0a
+
+</pre>
+</p>
+<h2>Detailed Reporting of Bluetooth Activity</h2>
+<p>
+    To view <em>all</em> the activity on the local Bluetooth controller there is a Bluetooth monitoring tool from
+    BlueZ called "btmon".
+    This has a very verbose output as it does tell us <em>everything</em> that is happening with the Bluetooth controller
+    and is typically used for debugging low-level issues.
+</p>
+<p>
+    To run btmon in a terminal use the following command:
+<pre>sudo btmon</pre>
+</p>
+<p>
+While bluetoothctl scan is running in the first terminal,  btmon will report such things as an "LE Advertising Report"
+    which will contain information about nearby devices that are advertising. Our beacon should be in amongst all the
+    output in btmon. For example:
+</p>
+<p>
+<pre>
+> HCI Event: LE Meta Event (0x3e) plen 41                    [hci0] 1316.838336
+      LE Advertising Report (0x02)
+        Num reports: 1
+        Event type: Non connectable undirected - ADV_NONCONN_IND (0x03)
+        Address type: Random (0x01)
+        Address: F1:55:90:65:29:DC (Static)
+        Data length: 29
+        Flags: 0x06
+          LE General Discoverable Mode
+          BR/EDR Not Supported
+        16-bit Service UUIDs (complete): 1 entry
+          Google (0xfeaa)
+        Service Data (UUID 0xfeaa): 00f600000000000000000021000000000009
+        RSSI: -55 dBm (0xc9)
+</pre>
+
+</p>
+
+<h2>Duplicates</h2>
+<p>
+   You will see that although the beacon is broadcasting very frequently, the BlueZ tools don't report all occurrences.
+    This is because the BlueZ project are concerned about the resources being consumed in doing such activity.
+</p>
+<p>
+    BlueZ have deprecated `hcitool` that did allow this. If you still have it on your system then you can see every
+    broadcast from your beacon show up in `btmon` with:
+<pre>
+sudo hcitool lescan --duplicates
+</pre>
+</p>
+
+<p>
+    Some of the Bluetooth libraries that act as scanners can read all beacon broadcasts. <br>
+    One of the best Python libraries I've found for scanning for beacons is <a href="https://github.com/frawau/aioblescan">aioblescan</a>.
+</p>
+<h2>Other Beacon Types</h2>
+<p>
+    Much of what is described above should work for any BLE beacons. I've focus on Eddystone as it is an open specification
+    and most widely supported. One interesting place is the <a href="https://makecode.microbit.org/reference/bluetooth">MakeCode</a> editor for micro:bit
+    which supports very easy access to programming Eddystone beacons.
+</p>
+<p>
+    Jos Ryke (<a href="https://twitter.com/josryke">@josryke</a>) has posted on Twitter a great summary on how the
+    packets vary between the different beacon types.
+</p>
+
+    <p align=center><img width="90%" alt="Beacon Packet Summary" src="../asset/beacon_packet_cheatsheet.jpg"></p>
+<p>
+    With the aid of Jos's diagram and the <a href="https://www.bluetooth.com/specifications/assigned-numbers/generic-access-profile">
+    Generic Access Profile</a> specification we can see that Eddystone "Type" is 03 (Complete List of 16-bit Service Class UUIDs)
+    where as ibeacon "Type" is FF (Manufacturer Specific Data).<br>
+    This means data being broadcast is in slightly different places. For example, for ibeacon the major and minor is
+    manufacture data while for Eddystone UID Namespace and Instance information is Service Data.
+</p>
+<p>
+    In bluetoothctl this presents itself as the following:<br>
+    For ibeacon:
+    <pre>[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Key: 0x004c
+[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x10
+[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x05
+[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x0b
+[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x10
+[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x88
+[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0xed
+[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x6e
+[CHG] Device 56:9E:9F:3D:3A:EB RSSI: -80
+</pre>
+And for Eddystone UID:
+<pre>[CHG] Device F1:55:90:65:29:DC ServiceData Key: 0000feaa-0000-1000-8000-00805f9b34fb
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0xf6
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x21
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x09
+</pre>
+</p>
+
+<p>By looking at the list <a href="https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers">Company Identifiers</a> we can learn that the <i>ManufacturerData Key</i> of 0x004c is for Apple.</p>
+<h2>license</h2>
+<footer>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="Creative Commons License" style="border-width:0"
+             src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
+    </a><br />
+    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+          property="dct:title" rel="dct:type">This HowTo
+    </span>
+    by
+    <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Barry Byford</span>
+    is licensed under a <br>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    <br />Based on work at <a xmlns:dct="http://purl.org/dc/terms/"
+                                href="https://github.com/ukBaz/python-bluezero" rel="dct:source">
+    https://github.com/ukBaz/python-bluezero</a>.
+    <p>First Published: 2018-01-05</p>
+</footer>
+</body>
+</html>

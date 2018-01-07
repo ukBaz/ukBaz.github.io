@@ -10,129 +10,150 @@
 <h2>Overview</h2>
 <p>
     Small Single Board Computers (SBC) such as Raspberry Pi 3 (RPi3) with their built in BLE 4.0 controllers are enough
-    to scan for Bluetooth Low Engery beacons such as those that use the <a href="https://github.com/google/eddystone">
-    Eddystone</a> format beacons.<br>
-    BlueZ however is not so keen on scanning for beacons as there is a concern that such activity is quite resource
-    intensive.<br>
-    Many tutorials on the internet are done with command line tools such as hcitool and hcidump. These tools have been
-    deprecated by the BlueZ project. This 'HowTo' looks at how to scan for beacons without using those tools.
+    to scan for Bluetooth Low Energy beacons such as those that use the <a href="https://github.com/google/eddystone">
+    Eddystone format</a> beacons.
+</p>>
+<p>
+    The BlueZ maintainers however are not so keen on supporting scanning for beacons with their command=line tools
+    as there is a concern that such activity is quite resource intensive.
+</p>
+<p>
+    Many tutorials on the internet are done with command-line tools with the now deprecated tools of
+    hcitool and hcidump. This 'HowTo' looks at how to scan for beacons without using those tools.
 </p>
 
 <h2>Scanning for Beacons</h2>
 <p>
-In a  terminal use the BlueZ command line tool to put the RPi3 into scanning mode by issuing the `scan on` command.
+    The go-to tool when using Bluetooth from the Linux command-line is <code>bluetoothctl</code>.
+</p>
+<p>
+    In a  terminal use the BlueZ command-line tool to put the RPi3 into scanning mode by issuing the `scan on` command.
     It is also a good idea to clear all filtering options. My session looked like this:
-
+</p>
 <pre>
-pi@RPi3:~ $ bluetoothctl
-[bluetooth]# set-scan-filter-clear
-SetDiscoveryFilter success
-[bluetooth]# scan on
-Discovery started
-[CHG] Controller B8:27:EB:22:57:E0 Discovering: yes
-[CHG] Device F1:55:90:65:29:DC RSSI: -55
-[CHG] Device F1:55:90:65:29:DC ServiceData Key: 0000<mark>feaa</mark>-0000-1000-8000-00805f9b34fb
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0xf6
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x21
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x09
-[bluetooth]# scan off
+    pi@RPi3:~ $ <mark>bluetoothctl</mark>
+    [bluetooth]# <mark>set-scan-filter-clear</mark>
+    SetDiscoveryFilter success
+    [bluetooth]# <mark>scan on</mark>
+    Discovery started
+    [CHG] Controller B8:27:EB:22:57:E0 Discovering: yes
+    [CHG] Device F1:55:90:65:29:DC RSSI: -55
+    [CHG] Device F1:55:90:65:29:DC ServiceData Key: 0000feaa-0000-1000-8000-00805f9b34fb
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0xf6
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x21
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x09
+    [bluetooth]# <mark>scan off</mark>
 
 </pre>
-    The 16-bit <a href="https://www.bluetooth.com/specifications/assigned-numbers/16-bit-uuids-for-members?_ga=2.105995968.2115520943.1514979233-967253953.1449700706"> Eddystone Service UUID</a> is 0xfeaa.
-Once we know the Service UUID we can filter to see just Eddystone beacons in bluetoothctl. For example:
+<p>
+    The 16-bit UUID for the <a href="https://www.bluetooth.com/specifications/assigned-numbers/16-bit-uuids-for-members?_ga=2.105995968.2115520943.1514979233-967253953.1449700706"> Eddystone Service </a>
+    is 0xfeaa.
+</p>
+<p>
+    Once we know the Service UUID we can filter to see just Eddystone beacons in bluetoothctl. For example:
+</p>
 <pre>
-[bluetooth]# set-scan-filter-uuids 0xfeaa
-SetDiscoveryFilter success
-[bluetooth]# scan on
-Discovery started
-[CHG] Controller B8:27:EB:22:57:E0 Discovering: yes
-[CHG] Device F1:55:90:65:29:DC RSSI: -76
-[CHG] Device F1:55:90:65:29:DC RSSI: -78
-[CHG] Device F1:55:90:65:29:DC ServiceData Key: 0000feaa-0000-1000-8000-00805f9b34fb
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0xf6
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x21
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x0a
+    [bluetooth]# <mark>set-scan-filter-uuids 0xfeaa</mark>
+    SetDiscoveryFilter success
+    [bluetooth]# <mark>scan on</mark>
+    Discovery started
+    [CHG] Controller B8:27:EB:22:57:E0 Discovering: yes
+    [CHG] Device F1:55:90:65:29:DC RSSI: -76
+    [CHG] Device F1:55:90:65:29:DC RSSI: -78
+    [CHG] Device F1:55:90:65:29:DC ServiceData Key: 0000feaa-0000-1000-8000-00805f9b34fb
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0xf6
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x21
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x0a
 
 </pre>
+<p>
+    In this example it has not made any difference. However, if you have other Bluetooth devices advertising
+    nearby it will be very helpful to reduce how much is reported.
 </p>
 <h2>Detailed Reporting of Bluetooth Activity</h2>
 <p>
-    To view <em>all</em> the activity on the local Bluetooth controller there is a Bluetooth monitoring tool from
+    To view <em>all</em> the activity on the RPi's Bluetooth controller there is a Bluetooth monitoring tool from
     BlueZ called "btmon".
-    This has a very verbose output as it does tell us <em>everything</em> that is happening with the Bluetooth controller
-    and is typically used for debugging low-level issues.
+    This has a very verbose output as it does tell us <em>everything</em> that is happening with the
+    Bluetooth controller and is typically used for debugging low-level issues.
 </p>
 <p>
     To run btmon in a terminal use the following command:
 <pre>sudo btmon</pre>
 </p>
 <p>
-While bluetoothctl scan is running in the first terminal,  btmon will report such things as an "LE Advertising Report"
+    With bluetoothctl scanning in the first terminal, btmon will report such things as an "LE Advertising Report"
     which will contain information about nearby devices that are advertising. Our beacon should be in amongst all the
     output in btmon. For example:
 </p>
 <p>
 <pre>
-> HCI Event: LE Meta Event (0x3e) plen 41                    [hci0] 1316.838336
-      LE Advertising Report (0x02)
-        Num reports: 1
-        Event type: Non connectable undirected - ADV_NONCONN_IND (0x03)
-        Address type: Random (0x01)
-        Address: F1:55:90:65:29:DC (Static)
-        Data length: 29
-        Flags: 0x06
-          LE General Discoverable Mode
-          BR/EDR Not Supported
-        16-bit Service UUIDs (complete): 1 entry
-          Google (0xfeaa)
-        Service Data (UUID 0xfeaa): 00f600000000000000000021000000000009
-        RSSI: -55 dBm (0xc9)
+    > HCI Event: LE Meta Event (0x3e) plen 41                    [hci0] 1316.838336
+          LE Advertising Report (0x02)
+            Num reports: 1
+            Event type: Non connectable undirected - ADV_NONCONN_IND (0x03)
+            Address type: Random (0x01)
+            Address: F1:55:90:65:29:DC (Static)
+            Data length: 29
+            Flags: 0x06
+              LE General Discoverable Mode
+              BR/EDR Not Supported
+            16-bit Service UUIDs (complete): 1 entry
+              Google (0xfeaa)
+            Service Data (UUID 0xfeaa): 00f600000000000000000021000000000009
+            RSSI: -55 dBm (0xc9)
 </pre>
 
 </p>
 
 <h2>Duplicates</h2>
 <p>
-   You will see that although the beacon is broadcasting very frequently, the BlueZ tools don't report all occurrences.
-    This is because the BlueZ project are concerned about the resources being consumed in doing such activity.
+    Beacons are broadcasting/advertising very frequently (every second or so) and you will notice that the BlueZ tools
+    are not reporting all occurrences of those adverts. This is because the BlueZ tools are filtering duplicate
+    adverts. This is done because of concerns about the machine resources being consumed in doing such activity.
 </p>
 <p>
-    BlueZ have deprecated `hcitool` that did allow this. If you still have it on your system then you can see every
-    broadcast from your beacon show up in `btmon` with:
-<pre>
-sudo hcitool lescan --duplicates
-</pre>
+    The BlueZ project has deprecated the command-line tool <code>hcitool</code> that did allow this. This is because
+    the tool used the <code>Host Controller Interface</code> (HCI) which is a very low-level interface and did not protect
+    the user from being able to do very bad things to their system. The new BlueZ tools give the user more protection
+    however it does mean the tools do not report duplicates.
 </p>
+    If you still have hcitool on your system then you can see every
+    broadcast from your beacon show up in <code>btmon</code> using the following command:
+<pre>
+    sudo hcitool lescan --duplicates
+</pre>
+
 
 <p>
     Some of the Bluetooth libraries that act as scanners can read all beacon broadcasts. <br>
@@ -140,8 +161,9 @@ sudo hcitool lescan --duplicates
 </p>
 <h2>Other Beacon Types</h2>
 <p>
-    Much of what is described above should work for any BLE beacons. I've focus on Eddystone as it is an open specification
-    and most widely supported. One interesting place is the <a href="https://makecode.microbit.org/reference/bluetooth">MakeCode</a> editor for micro:bit
+    Much of what is described above should work for any BLE beacons. I've focused on Eddystone as it is an open
+    specification and most widely supported. One interesting place that has Eddystone support is the
+    <a href="https://makecode.microbit.org/reference/bluetooth">MakeCode</a> editor for micro:bit
     which supports very easy access to programming Eddystone beacons.
 </p>
 <p>
@@ -152,44 +174,49 @@ sudo hcitool lescan --duplicates
     <p align=center><img width="90%" alt="Beacon Packet Summary" src="../asset/beacon_packet_cheatsheet.jpg"></p>
 <p>
     With the aid of Jos's diagram and the <a href="https://www.bluetooth.com/specifications/assigned-numbers/generic-access-profile">
-    Generic Access Profile</a> specification we can see that Eddystone "Type" is 03 (Complete List of 16-bit Service Class UUIDs)
-    where as ibeacon "Type" is FF (Manufacturer Specific Data).<br>
-    This means data being broadcast is in slightly different places. For example, for ibeacon the major and minor is
-    manufacture data while for Eddystone UID Namespace and Instance information is Service Data.
+    Generic Access Profile</a> specification we can see that Eddystone adverts have a type of <code>03</code>
+    (Complete List of 16-bit Service Class UUIDs) where as ibeacon has a type of <code>FF</code>
+    (Manufacturer Specific Data).
+</p>
+<p>
+    This means data being broadcast is reported slightly differently. For example, for ibeacon the Major and Minor
+    values are Manufacturer Data while for Eddystone UID Namespace and Instance values are Service Data.
 </p>
 <p>
     In bluetoothctl this presents itself as the following:<br>
     For ibeacon:
-    <pre>[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Key: 0x004c
-[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x10
-[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x05
-[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x0b
-[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x10
-[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x88
-[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0xed
-[CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x6e
-[CHG] Device 56:9E:9F:3D:3A:EB RSSI: -80
+    <pre>
+    [CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Key: 0x004c
+    [CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x10
+    [CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x05
+    [CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x0b
+    [CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x10
+    [CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x88
+    [CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0xed
+    [CHG] Device 56:9E:9F:3D:3A:EB ManufacturerData Value: 0x6e
+    [CHG] Device 56:9E:9F:3D:3A:EB RSSI: -80
 </pre>
 And for Eddystone UID:
-<pre>[CHG] Device F1:55:90:65:29:DC ServiceData Key: 0000feaa-0000-1000-8000-00805f9b34fb
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0xf6
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x21
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
-[CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x09
+<pre>
+    [CHG] Device F1:55:90:65:29:DC ServiceData Key: 0000feaa-0000-1000-8000-00805f9b34fb
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0xf6
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x21
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x00
+    [CHG] Device F1:55:90:65:29:DC ServiceData Value: 0x09
 </pre>
 </p>
 
@@ -212,6 +239,7 @@ And for Eddystone UID:
                                 href="https://github.com/ukBaz/python-bluezero" rel="dct:source">
     https://github.com/ukBaz/python-bluezero</a>.
     <p>First Published: 2018-01-05</p>
+    <p>Last Updated: 2018-01-06</p>
 </footer>
 </body>
 </html>

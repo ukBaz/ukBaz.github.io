@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="howto.css">
+    <meta charset="UTF-8">
+    <title>cap-touch with ubit</title>
+</head>
+<body>
+<div>
+    <h1>Capacitive Touch With micro:bit</h1>
+</div>
+
+<h2>Overview</h2>
+<iframe class="center" width="560" height="315" src="https://www.youtube.com/embed/lO1UFwdejuk" frameborder="0"
+        allowfullscreen></iframe>
+<P>
+    I can't pinpoint the exact moment when I started to get curious about including "home made" capacitive touch
+    sensors in to one of my projects.
+    I suspect it was an accumulation of things.
+</P>
+<p>
+    There was that occasion when a student on one of my workshops was fascinated by a "button" capacitive sensor
+    we were using. They wanted to understand how it was triggering before their finger actually touched it. This
+    resulted in a great discussion about electric fields and capacitance.
+</P>
+<p>
+    There is that poster that I walk by regularly showing music technology which has a graphic on it that looks like
+    a "play" button. I keep thinking that the poster needs to be upgraded so people can press the play button and music
+    happens.
+</p>
+<p>
+    I regularly read about projects from the team at <a href="https://www.bareconductive.com/">Bare Conductive</a>
+    featuring painted sensors. This results in my asking lots of questions about screen printing
+    to my sister-in-law.
+</p>
+<p>
+    Clearly this idea has been building for a while and at the start of this year I ordered some
+    <a href="https://shop.pimoroni.com/products/paint-pen-10ml">Bare Conductive Paint</a> and
+    <a href="https://shop.pimoroni.com/products/copper-tape">copper tape</a>
+    from Pimoroni to take the idea to the next level.
+</p>
+<p>
+    The final piece of the puzzle was a great article from
+    <a href="https://www.allaboutcircuits.com/technical-articles/circuits-and-techniques-for-implementing-capacitive-touch-sensing/">All
+        About Circuits</a>
+    explaining how capacitive touch sensors could be done
+    with a single pin on a modern micro-controller.
+</p>
+
+<h2>Goal</h2>
+<p>
+    Capacitive Touch Sensors are not new. I have seen a number of different options out there for makers that do
+    the job really
+    well so why didn't I go for one of them?
+</p>
+<p>
+    The short answer is form factor. If I was going to update that poster I needed something that could be hidden
+    behind the frame of the poster. This constraint formed the idea that the sensor would be small and battery powered
+    communicating
+    with something bigger that played the sound.
+</p>
+<p>
+    This drove the decision to experiment with the micro:bit to see if it could do the capacitive touch sensing.
+</p>
+<h2>Capacitive not Resistive</h2>
+<p>
+    By default the micro:bit does support touch but it is resistive touch rather than capacitive touch. This is
+    described in the <a href="https://lancaster-university.github.io/microbit-docs/ubit/io/#overview">runtime
+    documentation</a>
+    as <em>"Some pins can also perform basic touch sensing through resistance detection."</em>
+</p>
+<p>
+    Resistive touch would not work for the poster upgrade idea as you have to physically touch the sensor
+    and be connected
+    to the GND pin of the micro:bit. This is why capacitive sensing is so good. The sensor could be behind the poster
+    but it would still sense the hand through the poster. It also does not require the user to be holding a GND wire.
+</p>
+<h2>Sensing Pin Code</h2>
+<p align="center">
+    <img width="90%" alt="Reading pin" src="../asset/cap_sense/microbit-read_pin.png">
+</p>
+<p>
+    The core functionality of the code is the switching of the pin (P1) between being a digital output (with a high
+    value) and an analogue input.
+    The capacitance introduce by a hand being present will cause the value read to be higher.
+</p>
+<h2>Establishing A Reference</h2>
+<p align="center">
+    <img width="90%" alt="calibration pin" src="../asset/cap_sense/microbit_calibration.png">
+</p>
+<p>
+    We need to calibrate our sensor. We do this by taking a reading when no hand is present on the sensor.
+    We read the value from the sensor a number of times and average the value to get a more stable value
+</p>
+<h2>Is Touched</h2>
+<p align="center">
+    <img width="90%" alt="sense touch on pin" src="../asset/cap_sense/microbit-is-touched.png">
+</p>
+<p>
+    This is very similar to the calibration step except that we are compare the value we get from the sensor
+    to the value from the reference value when no hand was present. If the reading is higher then we can assume a
+    hand is present.
+    To make the reading more reliable we we add a margin to the reference value.
+</p>
+<h2>Running On Batteries</h2>
+<p>
+    As you saw in the video at the top of the page, a promising start was made and the code seem to be enough to
+    detect a hand about to touch the sensor. Readings from the sensor showed good values that
+    clearly crossed the threshold value that had been set.<br>
+    The Y value on the chart is the value from the micro:bit ADC which
+    represents about 225mV peek-to-peek.
+</p>
+<p align="center">
+    <img width="90%" alt="chart of grounded micro:bit" src="../asset/cap_sense/grounded.png">
+</p>
+<p>
+    When I ran the same experiment with the micro:bit on batteries the values were not as large. In fact they were
+    tiny coming out at about 9.6mV peek-to-peek.
+    Experimenting with the reference value meant I could (as in the graph below) get a successful result. However it
+    was not a reliable or predictable result. There was an issue!
+</p>
+<p align="center">
+    <img width="90%" alt="chart of floating micro:bit" src="../asset/cap_sense/floating.png">
+</p>
+<p>
+    The received wisdom from the people I turned to for help was that it worked when the micro:bit was powered by the
+    USB cable via the computer because there was a route to ground. When on batteries the whole circuit was floating.
+</p>
+<p>
+    Introducing some kind of ground plane into the sensor design seemed to be what I was being advised. After a few
+    iteration of different designs progress was not being made. In frustration I attached crocodile clip from the
+    GND pin of the micro:bit to copper tape pattern I had been experimenting with on the bottom of the box. BINGO!
+    We were back in business.
+</p>
+<p align="center">
+    <img width="90%" alt="chart of floating micro:bit" src="../asset/cap_sense/top_and_bottom.png">
+</p>
+<p>
+    While only ~48mV peek-to-peek, it is enough to get a consistent and reliable touch sensor even through a poster.
+</p>
+<h2>Bluetooth Beacons</h2>
+<p align="center">
+    <img width="50%" alt="code for Bluetooth beacons on micro:bit" src="../asset/cap_sense/beacons.png">
+</p>
+<p>
+    One of the great things about the micro:bit is it has great Bluetooth support. Bluetooth will allow the sensor
+    to communicate back to something like a Raspberry Pi about its status. </p>
+<p>
+    One project idea would involve having more sensors than the number of Bluetooth connections a Raspberry Pi can
+    support. This is only a limitation if you want the Raspberry Pi to send information back to the sensor.
+</p>
+<p>
+    If the sensor was only to broadcast then the Raspberry Pi could listen for the status from many sensors. In the
+    code above we change the <code>instance</code> value to represent if the sensor is triggered or not.
+</p>
+
+<h2>Where next</h2>
+<p>
+    These initial tests have encouraged me to attempt to implement a project with capacitive sensing and a micro:bit.
+</p>
+<p>
+    Exactly what that project will be is still to be decided as it looks like there might be a few issues to
+    solve still. This means it will not be anything too ambitious (or expensive).
+</p>
+<h2>micro:bit Code</h2>
+<p>
+    For reference here is the code that was used for these initial tests:
+</p>
+<p align="center">
+    <a href="../asset/cap_sense/microbit-cap-sense.png"
+       target="_blank">
+        <img width="90%"
+             alt="chart of floating micro:bit"
+             src="../asset/cap_sense/microbit-cap-sense.png">
+    </a>
+</p>
+<h2>license</h2>
+<footer>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="Creative Commons License" style="border-width:0"
+             src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"/>
+    </a><br/>
+    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+          property="dct:title" rel="dct:type">This HowTo
+    </span>
+    by
+    <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Barry Byford</span>
+    is licensed under a <br>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    <br/>Based on work at <a xmlns:dct="http://purl.org/dc/terms/"
+                             href="https://github.com/ukBaz/python-bluezero" rel="dct:source">
+    https://github.com/ukBaz/python-bluezero</a>.
+    <p>First Published: 2018-01-14</p>
+</footer>
+</body>
+</html>

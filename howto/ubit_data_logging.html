@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="howto.css">
+    <meta charset="UTF-8">
+    <title>data logging with ubit</title>
+</head>
+<body>
+<div>
+    <h1>Using Multiple Channels on the Bitty Sofware Data Logger</h1>
+</div>
+<p align="center">
+    <img width="90%" alt="chart of micro:bit cap-touch sensor response" src="../asset/cap_sense/grounded.png">
+</p>
+
+<h2>Overview</h2>
+<P>
+    I have been experimenting with creating a <a href="microbit_touch.html" target="_blank">'home made' capacitive touch sensor</a>
+    for the micro:bit. During those experiments it became clear that I needed some way of accurately data logging
+    the performance of different designs.
+</P>
+<p>
+    This is when I started to look around for a solution and took a look at the
+    <a href="http://www.bittysoftware.com/apps/bitty_data_logger.html">bitty data logger</a>.
+    It is a paid for app and at £1.99 it is not the cheapest however it did seem to do exactly what I was looking for.
+    It was reassuring to see that it had good documentation and I had also seen positive feedback about it on Twitter
+    so I took the plunge.
+</p>
+<h2>Getting Started</h2>
+<p>
+    Bitty Software have done a <a href="http://www.bittysoftware.com/tutorials.html#data_logger">tutorial</a>
+    for C++ and for MakeCode. It was using the MakeCode editor that I was
+    interested in using so that is where I started.
+</p>
+<p>
+    I had the app reporting my sensor values in no time so it must be a good tutorial!
+</p>
+<h2>Pins or Channels</h2>
+<p>
+    The tutorial talks about sending the "pin number and analog value read from that pin" and that worked well.
+    However after using the app for a while I thought that it would help me more if  I could  send the
+    calibrated reference value of the sensor as well as the
+    ongoing averaged value. This is when I realised that I could send the data I required by thinking of the apps
+    functionality as selecting channels of data rather than pins.
+</p>
+<h2>Transmitting Data</h2>
+<p align="center">
+    <img width="90%" alt="transmit sensor data function" src="../asset/bitty_logger/transmit_data.png">
+</p>
+<p>
+    The data that is displayed in the bitty data logger on the phone is sent to it by raising a <code>9030</code> event.<br>
+    The value of the event has the reading that you want charting plus the pin number.
+</p>
+<p>
+    In my code I am sending:
+<ul>
+    <li><code>calibrationValue + THRESHOLD</code> to be displayed as pin 0</li>
+    <li><code>reading ÷ SAMPLES + 16384</code> to be displayed as pin 1</li>
+</ul>
+In the next section I will explain why I added the magic number of <code>16384</code>
+to the reading is tell the app that the data is for Pin 1.
+</p>
+<h2>Bitwise Operations</h2>
+<p>
+    <img width="90%" alt="Binary Data Structure" src="../asset/bitty_logger/bit_data.png">
+</p>
+<p>
+    The app uses 16-bits to send the data from the micro:bit to the app. Of those 16-bits, it expects 2-bits for
+    the pin (or channel in my terminology) and 12-bits for the value to be displayed.<br>
+    In the Bitty tutorial they do things properly and use bitwise operations to move the pin number along 14-bits
+    so the bits for the pin number take their rightful place in the data sent to the app.
+</p>
+<p>
+    By default I can not see that the MakeCode editor supports bitwise operations in the block editor. I worked
+    around this by using the diagram above to see where the pin values should be in the data and calculate
+    the denary values for the pins:
+
+<ul>
+    <li>For pin 1 the binary is <code>01</code> and when in bit location 15 & 14 the denary value is 16384.</li>
+    <li>For pin 2 the binary is <code>10</code> and when in bit location 15 & 14 the denary value is 32768.</li>
+    <li>For pin 0 the binary is <code>00</code> and when in bit location 15 & 14 the denary value is 0.</li>
+</ul>
+</p>
+<h2>Conclusion</h2>
+<p align="center">
+        <img width="70%" alt="chart of micro:bit cap-touch sensor response" src="../asset/cap_sense/grounded.png">
+</p>
+<p>
+    Being able to get charts like this in real time as I tweaked the design of the
+    <a href="microbit_touch.html" target="_blank">'home made' capacitive touch sensor</a> has been such a help
+    I think the £1.99 was money well spent.
+</p>
+<h2>Full Code</h2>
+<p align="center">
+    <a href="../asset/bitty_logger/microbit-logger2.png"
+       target="_blank">
+        <img width="90%"
+             alt="chart of floating micro:bit"
+             src="../asset/bitty_logger/microbit-logger2.png">
+    </a>
+</p>
+<h2>license</h2>
+<footer>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="Creative Commons License" style="border-width:0"
+             src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"/>
+    </a><br/>
+    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+          property="dct:title" rel="dct:type">This HowTo
+    </span>
+    by
+    <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Barry Byford</span>
+    is licensed under a <br>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    <br/>Based on work at <a xmlns:dct="http://purl.org/dc/terms/"
+                             href="https://github.com/ukBaz/python-bluezero" rel="dct:source">
+    https://github.com/ukBaz/python-bluezero</a>.
+    <p>First Published: 2018-01-15</p>
+</footer>
+</body>
+</html>

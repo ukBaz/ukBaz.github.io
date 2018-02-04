@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="howto.css">
+    <meta charset="UTF-8">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sons-of-obsidian"></script>
+    <title>micro:bit Radio Packets</title>
+</head>
+<body>
+<div>
+    <h1>micro:bit - Radio Packets</h1>
+</div>
+
+<h2>Introduction</h2>
+<p>
+    The main purpose of micro:bit's Radio functionality is to share data between
+    micro:bits. Data has to be broken up into small chunks of data known as
+    data packets in order to be transmitted over the air.
+    The data is then re-built once it reaches the destination micro:bit.
+</p>
+<p>
+    What I discovered was that MakeCode had created a packet specification on on top
+    of the default <a href="https://lancaster-university.github.io/microbit-docs/ubit/radio/">Radio</a>
+    packet specified in the Device Abstraction Layer (DAL).
+    Protocols are used to control how data is transmitted across networks.
+</p>
+<p>
+    The advantage of this extra specification is that it allows the identification
+    of what type of data is being sent. i.e. integer, string or,
+    variable name and value pair.<br>
+    The disadvantage of this additional packet specification is that some additional
+    formatting of the data packet is required if we want MakeCode to correctly interpret the data
+    we are sending.
+</p>
+
+<h2>Research Makecode Specification</h2>
+<p>
+    After asking in the micro:bit community Slack channel I was pointed at two great
+    sources of information about the packet structure:
+</p>
+
+<p>
+    The GitHub account for Microsoft had comments in the code documenting the packet structure
+    <a href="https://github.com/Microsoft/pxt-microbit/blob/master/libs/radio/radio.cpp">https://github.com/Microsoft/pxt-microbit/blob/master/libs/radio/radio.cpp</a>
+</p>
+<pre class="prettyprint">
+// Packet Spec:
+// | 0              | 1 ... 4       | 5 ... 8           | 9 ... 28
+// ----------------------------------------------------------------
+// | packet type    | system time   | serial number     | payload
+//
+// Serial number defaults to 0 unless enabled by user
+
+// payload: number (9 ... 12)
+#define PACKET_TYPE_NUMBER 0
+
+// payload: number (9 ... 12), name length (13), name (14 ... 26)
+#define PACKET_TYPE_VALUE 1
+
+// payload: string length (9), string (10 ... 28)
+#define PACKET_TYPE_STRING 2
+
+// payload: buffer length (9), buffer (10 ... 28)
+#define PACKET_TYPE_BUFFER 3
+</pre>
+
+<p>
+         A micro:support answer contained some more information on the packet structures
+<a href="https://support.microbit.org/support/solutions/articles/19000053168-receiving-radio-data-from-pxt-within-python">
+    https://support.microbit.org/support/solutions/articles/19000053168-receiving-radio-data-from-pxt-within-python
+</a>
+</p>
+<pre class="prettyprint">
+    01 00 01 | 02 | 1E 01 01 00 | 00 00 00 00 | 05 44 41 4C 45 4B
+
+    --- DAL HEADER
+    01                      raw payload
+    00                      group number
+    01                      version 1
+
+    -- PXT HEADER
+    02                      type=string
+    1E 01 01 00             timestamp
+    00 00 00 00             serial number (disabled)
+
+    -- PXT DATA
+    05                      length of string
+    44 41 4C 45 4B          DALEK
+</pre>
+<h2>Bits, Bytes and Octets</h2>
+<p>
+    The numbers referenced above (and used elsewhere) in this article, when talking about packets, are shown
+    as the hexadecimal representation of an octet. <br>
+    Although the term byte is often used to represent 8 bits, there are some systems that use values other than
+    8 bits for a byte. Hence octet is the clearest term to use when talking about 8 bits.
+</p>
+<table>
+    <tr>
+        <td></td><th colspan="8">Octet</th>
+    </tr>
+    <tr>
+        <th>Binary Bits</th><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td>
+    </tr>
+    <tr>
+        <th>Hexadecimal</th><td colspan="4">F</td><td colspan="4">F</td>
+    </tr>
+    <tr>
+        <th>Denary</th><td colspan="8">255</td>
+    </tr>
+</table>
+<h2>The MakeCode Packet Specification Summary</h2>
+<p>
+    To send compatible packets from MicroPython to the MakeCode over the radio it is required to send the DAL
+    header and MakeCode Packet information. This is summarised below. The empty squares represent octets where relevant
+    values are filled in. Squares with octets in them represent fixed values for the entry.
+</p>
+<table>
+    <tr>
+        <th>MakeCode Packet Type</th><th colspan="3">DAL Header</th><th colspan="29">MakeCode Packet Specification</th>
+    </tr>
+    <tr>
+        <th></th><th>raw payload</th><th>group number</th><th>version</th><th>packet type</th><th colspan="4">system time</th><th colspan="4">serial number</th><th colspan=20>payload</th>
+    </tr>
+    <tr>
+        <td>Number Packet</td><td>01</td><td></td><td>01</td><td>00</td><td></td><td></td><td></td><td></td><td>00</td><td>00</td><td>00</td><td>00</td><td></td><td></td><td></td><td></td>
+    </tr>
+    <tr>
+        <td>Value Packet</td><td>01</td><td></td><td>01</td><td>01</td><td></td><td></td><td></td><td></td><td>00</td><td>00</td><td>00</td><td>00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+    <tr>
+        <td>String Packet</td><td>01</td><td></td><td>01</td><td>02</td><td></td><td></td><td></td><td></td><td>00</td><td>00</td><td>00</td><td>00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+    <tr>
+        <td>Buffer Packet</td><td>01</td><td></td><td>01</td><td>03</td><td></td><td></td><td></td><td></td><td>00</td><td>00</td><td>00</td><td>00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+</table>
+<p>
+    Now to look at the payloads of the different MakeCode Packet types.
+</p>
+
+<h3>Number Packet</h3>
+<p>
+    This packet allow the sending of a two's-complement signed 32-bit integer.
+</p>
+<table>
+    <tr>
+        <th>Packet Type</th><th colspan="20">Payload</th>
+    </tr>
+    <tr>
+        <td>Number Packet</td><td colspan="4">number</td>
+    </tr>
+    <tr>
+        <td>00</td><td></td><td></td><td></td><td></td>
+    </tr>
+</table>
+<h3>Value Packet</h3>
+<p>
+    This packet allows you to send a two's complement signed 32-bit integer allow with a name. This key/value pair
+    allows you to specify the identify for the number being sent.<br>
+    The name is a string and can the 13 characters long. The length of the string needs to be specified.
+</p>
+<table>
+    <tr>
+        <th>Packet Type</th><th colspan="20">Payload</th>
+    </tr>
+    <tr>
+        <td>Value Packet</td><td colspan="4">number</td><td>name length</td><td colspan="13">name</td>
+    </tr>
+    <tr>
+        <td>01</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+</table>
+<h3>String Packet</h3>
+<p>This packet type allows the sending of string up to 19 characters. The length of the string has to be specified</p>
+<table>
+    <tr>
+        <th>Packet Type</th><th colspan="20">Payload</th>
+    </tr>
+    <tr>
+        <td>Number Packet</td><td>string length</td><td colspan="19">string</td>
+    </tr>
+    <tr>
+        <td>02</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+</table>
+<h3>Buffer Packet</h3>
+<p>
+    Allows raw bytes to be sent.
+
+</p>
+<table>
+    <tr>
+        <th>Packet Type</th><th colspan="20">Payload</th>
+    </tr>
+    <tr>
+        <td>Buffer Packet</td><td>buffer length</td><td colspan="19">buffer</td>
+    </tr>
+    <tr>
+        <td>03</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+</table>
+
+
+<h2>Implementation</h2>
+<p>
+    I have made a start on the implementation as I needed a solution for a project I am working on.
+    However longer term this should probably be implemented within the MicroPython <code>radio</code> module. <br>
+    This only implements the sending of the first three packet types. It does not implement decoding of any
+    received packets from MakeCode .<br>
+    The implementation always uses the serial number of <code>00000000</code> as recommended to protect the privacy
+    of those using the micro:bit.
+</p>
+
+<pre class="prettyprint linenums lang=py">
+class MakeRadio:
+    def __init__(self, group_id):
+        radio.config(group=group_id)
+        radio.on()
+        self.dal_header = b'\x01' + group_id.to_bytes(1) + b'\x01'
+
+    def send_number(self, msg):
+        packet_type = int('0').to_bytes(1)
+        time_stamp = running_time().to_bytes(4)
+        serial_num = int('0').to_bytes(4)
+        msg_bytes = msg.to_bytes(4)
+        raw_bytes = (self.dal_header +
+                     packet_type +
+                     time_stamp +
+                     serial_num +
+                     msg_bytes)
+        radio.send_bytes(raw_bytes)
+
+    def send_value(self, name, value):
+        packet_type = int('1').to_bytes(1)
+        time_stamp = running_time().to_bytes(4)
+        serial_num = int('0').to_bytes(4)
+        number = int(value).to_bytes(4)
+        name_bytes = bytes(str(name), 'utf8')
+        name_length = len(name_bytes).to_bytes(1)
+        raw_bytes = (self.dal_header +
+                     packet_type +
+                     time_stamp +
+                     serial_num +
+                     number +
+                     name_length +
+                     name_bytes)
+        radio.send_bytes(raw_bytes)
+
+    def send_string(self, msg):
+        packet_type = int('2').to_bytes(1)
+        time_stamp = running_time().to_bytes(4)
+        serial_num = int('0').to_bytes(4)
+        msg_bytes = bytes(str(msg), 'utf8')
+        msg_length = len(msg_bytes).to_bytes(1)
+        raw_bytes = (self.dal_header +
+                     packet_type +
+                     time_stamp +
+                     serial_num +
+                     msg_length +
+                     msg_bytes)
+        radio.send_bytes(raw_bytes)
+
+</pre>
+<h2>
+    Conclusion
+</h2>
+<p>
+    This implementation has been enough for me to be able to progress my project forward.
+</p>
+<p>
+    I have documented this here for my own reference when I need to come back to this topic later. It is also here
+    should anyone else wish to take this forward and do a more complete implementation
+</p>
+<h2>License</h2>
+<footer>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="Creative Commons License" style="border-width:0"
+             src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"/>
+    </a><br/>
+    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+          property="dct:title" rel="dct:type">This HowTo
+    </span>
+    by
+    <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Barry Byford</span>
+    is licensed under a <br>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    <p>First Published: 2018-02-04</p>
+</footer>
+</body>
+</html>

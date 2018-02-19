@@ -3,6 +3,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="howto.css">
     <meta charset="UTF-8">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sons-of-obsidian"></script>
     <title>RPi <-> micro:bit Workshop</title>
 </head>
 <body>
@@ -146,7 +147,7 @@ Connection successful
 <p>
     This first Python exercise is to send text to display on the micro:bit.
 </p>
-    <pre>
+    <pre class="prettyprint">
 from bluezero import microbit
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
                          device_addr='yy:yy:yy:yy:yy:yy')
@@ -163,7 +164,7 @@ ubit.disconnect()
 
     <h3>Reading a button press</h3>
     <p>Display an image of which button needs pressing to break out of the loop</p>
-    <pre>
+    <pre class="prettyprint">
 import time
 from bluezero import microbit
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
@@ -203,7 +204,7 @@ ubit.disconnect()
 
 
     </p>
-    <pre>
+    <pre class="prettyprint">
 import turtle
 import time
 from bluezero import microbit
@@ -256,7 +257,7 @@ turtle.bye()
                                 href="https://github.com/ukBaz/python-bluezero" rel="dct:source">
     https://github.com/ukBaz/python-bluezero</a>.
     <p>First Published: 26-August-2017</p>
-    <p>Updated: 7-September-2017 to match Bluezero v:0.0.5</p>
+    <p>Updated: 19-February-2018 to match Bluezero v:0.0.5</p>
 </footer>
 </body>
 </html>

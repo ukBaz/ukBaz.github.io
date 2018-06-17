@@ -65,7 +65,7 @@
 </pre>
 
 <p>
-         A micro:support answer contained some more information on the packet structures
+         A micro:support answer containing some more information on the packet structures
 <a href="https://support.microbit.org/support/solutions/articles/19000053168-receiving-radio-data-from-pxt-within-python">
     https://support.microbit.org/support/solutions/articles/19000053168-receiving-radio-data-from-pxt-within-python
 </a>
@@ -111,8 +111,8 @@
 <h2>The MakeCode Packet Specification Summary</h2>
 <p>
     To send compatible packets from MicroPython to the MakeCode over the radio it is required to send the DAL
-    header and MakeCode Packet information. This is summarised below. The empty squares represent octets where relevant
-    values are filled in. Squares with octets in them represent fixed values for the entry.
+    header and MakeCode Packet information. This is summarised below. The empty squares represent octets containing
+    user/program specific data. Squares with octets in them already represent fixed values for that entry type
 </p>
 <table>
     <tr>
@@ -155,9 +155,9 @@
 </table>
 <h3>Value Packet</h3>
 <p>
-    This packet allows you to send a two's complement signed 32-bit integer allow with a name. This key/value pair
-    allows you to specify the identify for the number being sent.<br>
-    The name is a string and can the 13 characters long. The length of the string needs to be specified.
+    This packet allows you to send a two's complement signed 32-bit integer along with the variable name.
+    This key/value pair enables you to specify what the number being represents. e.g. temperature or humidity<br>
+    The name is a string can be upto 13 characters long. The length of the string has to be specified in all cases.
 </p>
 <table>
     <tr>
@@ -171,7 +171,7 @@
     </tr>
 </table>
 <h3>String Packet</h3>
-<p>This packet type allows the sending of string up to 19 characters. The length of the string has to be specified</p>
+<p>This packet type allows the sending of string up to 19 characters. The length of the string has to be specified.</p>
 <table>
     <tr>
         <th>Packet Type</th><th colspan="20">Payload</th>
@@ -185,7 +185,7 @@
 </table>
 <h3>Buffer Packet</h3>
 <p>
-    Allows raw bytes to be sent.
+    Allows up to 19 raw bytes to be sent. The length of the raw buffer needs to be specified.
 
 </p>
 <table>
@@ -203,9 +203,9 @@
 
 <h2>Implementation</h2>
 <p>
-    I have made a start on the implementation as I needed a solution for a project I am working on.
+    I have made a start on the implementation as I needed a solution for a project I was working on.
     However longer term this should probably be implemented within the MicroPython <code>radio</code> module. <br>
-    This only implements the sending of the first three packet types. It does not implement decoding of any
+    My code so far only implements the sending of the first three packet types. It does not implement decoding of any
     received packets from MakeCode .<br>
     The implementation always uses the serial number of <code>00000000</code> as recommended to protect the privacy
     of those using the micro:bit.
@@ -268,7 +268,7 @@ class MakeRadio:
     This implementation has been enough for me to be able to progress my project forward.
 </p>
 <p>
-    I have documented this here for my own reference when I need to come back to this topic later. It is also here
+    I have documented this here for my own reference when I need to come back to the topic later. It is also here
     should anyone else wish to take this forward and do a more complete implementation
 </p>
 <h2>License</h2>

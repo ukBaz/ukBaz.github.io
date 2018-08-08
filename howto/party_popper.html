@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="howto.css">
+    <meta charset="UTF-8">
+    <title>Python Party Popper Puller</title>
+</head>
+<body>
+<H1>Python Party Popper Puller</H1>
+<p>
+    After reading about a number of wireless security devices having security issues
+    I wanted to look at creating a workshop that introduced people to some of the concepts behind Penetration Testing.
+    This idea was inspired after reading about the failure of
+    <a href="https://www.pentestpartners.com/security-blog/totally-pwning-the-tapplock-smart-lock/">Tapplock</a>.
+</p>
+<p>
+    I decided that using an actual product was a bad idea and so I needed to create something I could use for people
+    to do attacks on. It needed to be something that would be a little more exciting than an LED flashing on.
+    As exciting at that can be, I wanted something that could compete with those chemistry science communicators and
+    their explosions.
+</p>
+<p>
+    After experimenting with a couple of other ideas I came up with the idea of using a micro:bit to pull the
+    party popper. Having it controlled over the radio module would allow for different attack vectors.
+</p>
+<p>Struggling for inspiration I turned to Twitter for inspiration:</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Help! Looking for some inspiration on how I
+    can get a <a href="https://twitter.com/hashtag/microbit?src=hash&amp;ref_src=twsrc%5Etfw">#microbit</a> to pull
+    the string on my party poppers. Any ideas? <a href="https://t.co/IzspxESrdz">pic.twitter.com/IzspxESrdz
+    </a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1017355480035885056?ref_src=twsrc%5Etfw">July 12, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    Suggestions came flooding in and Brian's caught my attention.
+</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Hmmm a weight attached to the string and a release mechanism</p>&mdash; Brian Welsby (@TheFlyingKipper) <a href="https://twitter.com/TheFlyingKipper/status/1017360070957551616?ref_src=twsrc%5Etfw">July 12, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    A bit of research had revealed that it took 20 newtons (or a 2kg stationary weight) to pull a party popper.
+    Time for some experiments to see what that would look like...
+</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Project <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a> has started <a href="https://t.co/COAoEQxKCS">pic.twitter.com/COAoEQxKCS</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1017816239509557248?ref_src=twsrc%5Etfw">July 13, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>
+    and test some different weights:
+</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">After <a href="https://twitter.com/TheFlyingKipper?ref_src=twsrc%5Etfw">@TheFlyingKipper</a> suggested a &quot;weight on string&quot; as the release mechanism for project <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a> some experimentation was called for. First up, 600g weight <a href="https://t.co/dvKP58J1Cv">pic.twitter.com/dvKP58J1Cv</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1017850952714477573?ref_src=twsrc%5Etfw">July 13, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">As 600g worked so well for <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a> it is 300g up next <a href="https://t.co/dBcc5yVfjL">pic.twitter.com/dBcc5yVfjL</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1017853501819572225?ref_src=twsrc%5Etfw">July 13, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">With 300g weight working well for <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a> it was 100g up next <a href="https://t.co/gTBT0VvC8c">pic.twitter.com/gTBT0VvC8c</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1017854642733113344?ref_src=twsrc%5Etfw">July 13, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    While this had worked. I didn't feel that it was going to be reliable. I also was going to have to build 20 of
+    what ever I came up with. The solution was also going to have to be easily transportable. Umm? Time to look at
+    something else.
+</p>
+<p>
+    Servos! Surely servos were going to be the solution. But what about the small problem of pulling 2kg. Luckly
+    I found a database that listed lots of servos. But what did all that data mean? Luckily
+    RCHelicopterFun.com had done a very good write-up:
+</p>
+
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="en" dir="ltr">Looking for servos for project <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a>. Found great database of <br>RC servo. <a href="https://t.co/OWgR3lIE0k">https://t.co/OWgR3lIE0k</a><br>But where to start? modulation, weight, torque, motor type, rotation Argh!<br>This helped a lot <a href="https://t.co/omXKc06hiG">https://t.co/omXKc06hiG</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1018535370479173632?ref_src=twsrc%5Etfw">July 15, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    A servo selected. The next challenge was how to hold the party poppers and servos etc. A friend said I could use
+    their 3D printer if I provided the filament. So time to get designing...
+</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Trying to learn TinkerCAD for project <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a> <a href="https://t.co/1gnpA7ZnK4">pic.twitter.com/1gnpA7ZnK4</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1019352495158591488?ref_src=twsrc%5Etfw">July 17, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    The 3D printer had a live feed so I could see how things were progressing:
+</p>
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">Status right now... Watching this via the live feed... <a href="https://t.co/6Y6aGfdxcc">pic.twitter.com/6Y6aGfdxcc</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1019539031577722882?ref_src=twsrc%5Etfw">July 18, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>The result looked better than I could have hoped for:</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">Pretty happy with the way the print of <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a> came out. However it is turning out a lot harder to pull a party popper than you might think. We are going to need bigger batteries! <a href="https://t.co/b1V2VfHG7o">pic.twitter.com/b1V2VfHG7o</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1019686906991345664?ref_src=twsrc%5Etfw">July 18, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    There were however a few problems when trying to use the machine. Attaching the string from the party popper
+    to the servo arm was fiddly. If I didn't have enough slack in the string the servo would stall and burn out.
+</p>
+<p>
+    If only I could find a better way of grabbing the string... Back to printer...
+</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Project <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a> takes a new direction... <a href="https://t.co/bC99TqnNkN">pic.twitter.com/bC99TqnNkN</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1020281028894756865?ref_src=twsrc%5Etfw">July 20, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    The idea was that the string would get caught in the gears and get pulled. However it turns out printing gear
+    wheels is trickier than I thought. I still like the idea but it was difficult to execute
+</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">All the gear, no idea! <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a> <a href="https://t.co/g17DnQ0UFO">pic.twitter.com/g17DnQ0UFO</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1021450754958217216?ref_src=twsrc%5Etfw">July 23, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    Time for a rethink...<br>
+    Time to break out the <a href="https://www.pololu.com/category/60/micro-metal-gearmotors">Micro Metal Gearmotors</a>.
+    There are a lot to choose from. choice made! Time for some more testing. Still struggling with how to attach the string.
+</p>
+    <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Testing continues for <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a> <a href="https://t.co/ULwyE8AM1S">pic.twitter.com/ULwyE8AM1S</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1022829443050598400?ref_src=twsrc%5Etfw">July 27, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    And attach the motors to some LEGO. Although it was how the string was attached that was our problem.
+
+</p>
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">Yep, <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a> isn&#39;t going to work with a crocodile clip on the end <a href="https://t.co/67pPiujaXU">pic.twitter.com/67pPiujaXU</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1022941201064972294?ref_src=twsrc%5Etfw">July 27, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>
+    Although those 20 newtons came back to bite us...
+</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">And now the motor and party popper are stronger that the LEGO fixing. Time to redesign the fixing... <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a> <a href="https://t.co/eewrdA8ZOr">pic.twitter.com/eewrdA8ZOr</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1023116231539347458?ref_src=twsrc%5Etfw">July 28, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    It still wasn't reliable but we could some what consistently pull a party popper!!!
+</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">We have a <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a>!!!!! (Sometimes) <a href="https://t.co/zFkjeRaZKi">pic.twitter.com/zFkjeRaZKi</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1024042477790146563?ref_src=twsrc%5Etfw">July 30, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    Attaching the axle at both ends what a big improvement.
+</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">New and improved <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a> deserves the slo-mo treatment <a href="https://t.co/nwJkIuvNX1">pic.twitter.com/nwJkIuvNX1</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1024406394479542272?ref_src=twsrc%5Etfw">July 31, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>
+    There are still a number of issues to resolve:
+<ul>
+    <li>How to attach the string</li>
+    <li>Getting a compact configuration</li>
+    <li>Attaching the electronics to the LEGO</li>
+</ul>
+</p>
+
+</body>
+</html>

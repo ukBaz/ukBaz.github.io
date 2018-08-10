@@ -109,3 +109,10 @@ mark {
     background-color: yellow;
     color: black;
 }
+
+.twitter-tweet {
+    border-left: 3px sold #898660;
+    padding-left: 60px;
+    align-text: center;
+    color: #8844bb;
+}

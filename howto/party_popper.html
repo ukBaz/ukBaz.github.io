@@ -3,27 +3,32 @@
 <head>
     <link rel="stylesheet" type="text/css" href="howto.css">
     <meta charset="UTF-8">
-    <title>Python Party Popper Puller</title>
+    <title>Python Powered Party Popper Puller</title>
 </head>
 <body>
-<H1>Python Party Popper Puller</H1>
+<H1>Python Powered Party Popper Puller</H1>
+<h2>Background</h2>
 <p>
-    After reading about a number of wireless security devices having security issues
-    I wanted to look at creating a workshop that introduced people to some of the concepts behind Penetration Testing.
-    This idea was inspired after reading about the failure of
-    <a href="https://www.pentestpartners.com/security-blog/totally-pwning-the-tapplock-smart-lock/">Tapplock</a>.
+    After reading about a number of wireless consumer devices having security issues
+    I had the idea to create a workshop that introduced people to some of the concepts behind
+    <a href="https://en.wikipedia.org/wiki/Penetration_test" target="_blank">penetration testing</a>.
+    It was only after reading about the failure of
+    <a href="https://www.pentestpartners.com/security-blog/totally-pwning-the-tapplock-smart-lock/" target="_blank">Tapplock</a>
+    that I was finally spurred into action.
 </p>
 <p>
-    I decided that using an actual product was a bad idea and so I needed to create something I could use for people
-    to do attacks on. It needed to be something that would be a little more exciting than an LED flashing on.
+    Steering clear of using an actual product seemed like a sensible idea so I needed to create something I could authorize
+    people to do attacks on. It wanted it to be something that would result in a reaction a little more dramatic than
+    an LED flashing on.
     As exciting at that can be, I wanted something that could compete with those chemistry science communicators and
     their explosions.
 </p>
 <p>
-    After experimenting with a couple of other ideas I came up with the idea of using a micro:bit to pull the
+    After experimenting with a couple of other ideas I came up with the idea of using a micro:bit to pull a
     party popper. Having it controlled over the radio module would allow for different attack vectors.
 </p>
-<p>Struggling for inspiration I turned to Twitter for inspiration:</p>
+<h2>The Beginning</h2>
+<p>Struggling to get started on what the machine should look like, I turned to Twitter for inspiration:</p>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Help! Looking for some inspiration on how I
     can get a <a href="https://twitter.com/hashtag/microbit?src=hash&amp;ref_src=twsrc%5Etfw">#microbit</a> to pull
     the string on my party poppers. Any ideas? <a href="https://t.co/IzspxESrdz">pic.twitter.com/IzspxESrdz
@@ -36,9 +41,10 @@
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Hmmm a weight attached to the string and a release mechanism</p>&mdash; Brian Welsby (@TheFlyingKipper) <a href="https://twitter.com/TheFlyingKipper/status/1017360070957551616?ref_src=twsrc%5Etfw">July 12, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+<h2>Using a Weight</h2>
 <p>
     A bit of research had revealed that it took 20 newtons (or a 2kg stationary weight) to pull a party popper.
-    Time for some experiments to see what that would look like...
+    Time for some experiments to see what that might look like as a machine...
 </p>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Project <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a> has started <a href="https://t.co/COAoEQxKCS">pic.twitter.com/COAoEQxKCS</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1017816239509557248?ref_src=twsrc%5Etfw">July 13, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -55,21 +61,25 @@
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <p>
-    While this had worked. I didn't feel that it was going to be reliable. I also was going to have to build 20 of
-    what ever I came up with. The solution was also going to have to be easily transportable. Umm? Time to look at
+    While this had worked. It didn't feel like it was going to be reliable. As these were going to be used for a
+    workshop they were going to have to be easy to build, store and transport. This solution didn't feel like it was
+    going in the right direction so time to look at
     something else.
 </p>
+<h2>Using Servos</h2>
 <p>
-    Servos! Surely servos were going to be the solution. But what about the small problem of pulling 2kg. Luckly
-    I found a database that listed lots of servos. But what did all that data mean? Luckily
-    RCHelicopterFun.com had done a very good write-up:
+    One of the other solutions I'd had on Twitter was using servos. But what about the small problem of pulling 2kg?
+    A fair bit of searching later and I found a database that listed lots of servos.
+    But what did all that data mean?
+    Clearly I was not the first person to think this as RCHelicopterFun.com had done a very good write-up explaining
+    how to decide on the right servo for your project.
 </p>
 
 <blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="en" dir="ltr">Looking for servos for project <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a>. Found great database of <br>RC servo. <a href="https://t.co/OWgR3lIE0k">https://t.co/OWgR3lIE0k</a><br>But where to start? modulation, weight, torque, motor type, rotation Argh!<br>This helped a lot <a href="https://t.co/omXKc06hiG">https://t.co/omXKc06hiG</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1018535370479173632?ref_src=twsrc%5Etfw">July 15, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <p>
-    A servo selected. The next challenge was how to hold the party poppers and servos etc. A friend said I could use
+    With a servo selected the next challenge was how to hold the party poppers and servos etc. A friend said I could use
     their 3D printer if I provided the filament. So time to get designing...
 </p>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Trying to learn TinkerCAD for project <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a> <a href="https://t.co/1gnpA7ZnK4">pic.twitter.com/1gnpA7ZnK4</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1019352495158591488?ref_src=twsrc%5Etfw">July 17, 2018</a></blockquote>
@@ -88,10 +98,10 @@
 
 <p>
     There were however a few problems when trying to use the machine. Attaching the string from the party popper
-    to the servo arm was fiddly. If I didn't have enough slack in the string the servo would stall and burn out.
+    to the servo arm was fiddly. If I didn't have enough slack in the string the servo would stall and be damaged.
 </p>
 <p>
-    If only I could find a better way of grabbing the string... Back to printer...
+    If only I could find a better way of grabbing the string... Back to the drawing board...
 </p>
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Project <a href="https://twitter.com/hashtag/remotepopper?src=hash&amp;ref_src=twsrc%5Etfw">#remotepopper</a> takes a new direction... <a href="https://t.co/bC99TqnNkN">pic.twitter.com/bC99TqnNkN</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1020281028894756865?ref_src=twsrc%5Etfw">July 20, 2018</a></blockquote>
@@ -99,55 +109,82 @@
 
 <p>
     The idea was that the string would get caught in the gears and get pulled. However it turns out printing gear
-    wheels is trickier than I thought. I still like the idea but it was difficult to execute
+    wheels is trickier than I thought. I still like the idea but it was difficult to execute.
 </p>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">All the gear, no idea! <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a> <a href="https://t.co/g17DnQ0UFO">pic.twitter.com/g17DnQ0UFO</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1021450754958217216?ref_src=twsrc%5Etfw">July 23, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
 <p>
-    Time for a rethink...<br>
-    Time to break out the <a href="https://www.pololu.com/category/60/micro-metal-gearmotors">Micro Metal Gearmotors</a>.
-    There are a lot to choose from. choice made! Time for some more testing. Still struggling with how to attach the string.
+    Time for another rethink...<br>
+</p>
+<h2>Motors and LEGO</h2>
+<p>
+    Time to break out the <a href="https://www.pololu.com/category/60/micro-metal-gearmotors" target="_blank">
+    Micro Metal Gearmotors</a>.
+    There are a lot to choose from! With a choice made it was time  for some more testing.
+</p>
+<p>
+    The problem of how to have a quick attach mechanism for the party popper string was still playing on my mind.
 </p>
     <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Testing continues for <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a> <a href="https://t.co/ULwyE8AM1S">pic.twitter.com/ULwyE8AM1S</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1022829443050598400?ref_src=twsrc%5Etfw">July 27, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-<p>
-    And attach the motors to some LEGO. Although it was how the string was attached that was our problem.
 
+<p>
+    The idea was to attach the motors to some LEGO. The first attempt look good and held the party popper nicely over
+    the motor. It was the old problem of how to attach the string that proved to be the weak link.
 </p>
 <blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">Yep, <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a> isn&#39;t going to work with a crocodile clip on the end <a href="https://t.co/67pPiujaXU">pic.twitter.com/67pPiujaXU</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1022941201064972294?ref_src=twsrc%5Etfw">July 27, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 
 <p>
-    Although those 20 newtons came back to bite us...
+    Solving that problem just brought another familiar problem in to play.
+    It appears the force to pull a party popper is more than the force to pull LEGO apart...
 </p>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">And now the motor and party popper are stronger that the LEGO fixing. Time to redesign the fixing... <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a> <a href="https://t.co/eewrdA8ZOr">pic.twitter.com/eewrdA8ZOr</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1023116231539347458?ref_src=twsrc%5Etfw">July 28, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <p>
-    It still wasn't reliable but we could some what consistently pull a party popper!!!
+    Improving the structure of the LEGO around the motor and turning the crocodile clip around brought a step forward
+    although results were still not reliable although greatly improve!!!
 </p>
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">We have a <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a>!!!!! (Sometimes) <a href="https://t.co/zFkjeRaZKi">pic.twitter.com/zFkjeRaZKi</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1024042477790146563?ref_src=twsrc%5Etfw">July 30, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <p>
-    Attaching the axle at both ends what a big improvement.
+    Buying a bag of mixed LEGO Technic for eBay allowed for some gearing and attaching the axle at both ends
+    which brought big improvements.
 </p>
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">New and improved <a href="https://twitter.com/hashtag/RemotePopper?src=hash&amp;ref_src=twsrc%5Etfw">#RemotePopper</a> deserves the slo-mo treatment <a href="https://t.co/nwJkIuvNX1">pic.twitter.com/nwJkIuvNX1</a></p>&mdash; Barry Byford (@uk_baz) <a href="https://twitter.com/uk_baz/status/1024406394479542272?ref_src=twsrc%5Etfw">July 31, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+<h2>Next Steps</h2>
 <p>
     There are still a number of issues to resolve:
 <ul>
-    <li>How to attach the string</li>
-    <li>Getting a compact configuration</li>
+    <li>How to attach the string quickly and reliably</li>
+    <li>Making the machine compact and robust for easy transportation and storage</li>
     <li>Attaching the electronics to the LEGO</li>
 </ul>
 </p>
-
+<h2>license</h2>
+<footer>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="Creative Commons License" style="border-width:0"
+             src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
+    </a><br />
+    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+          property="dct:title" rel="dct:type">This page
+    </span>
+    by
+    <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Barry Byford</span>
+    is licensed under a <br>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    <p>Created on: 2018-08-10</p>
+    <p>Last Updated: 2018-08-10</p>
+</footer>
 </body>
 </html>

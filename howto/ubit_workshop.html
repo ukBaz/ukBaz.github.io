@@ -3,14 +3,14 @@
 <head>
     <link rel="stylesheet" type="text/css" href="howto.css">
     <meta charset="UTF-8">
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@uk_baz">
     <meta property="og:url"                content="https://ukbaz.github.io/howto/ubit_workshop.html" />
     <meta property="og:type"               content="article" />
     <meta property="og:title"              content="RPi <-> micro:bit BLE workshop" />
     <meta property="og:description"        content="An introduction on how you can exchange information between a
             micro:bit and a Raspberry Pi using Bluetooth Low Engergy (BLE)." />
-    <meta property="og:image"              content="https://ukbaz.github.io/asset/Bluetooth_logo.svg" />
+    <meta property="og:image"              content="https://ukbaz.github.io/asset/ubit_workshop/makecode_ble.png" />
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sons-of-obsidian"></script>
     <title>RPi <-> micro:bit Workshop</title>
 </head>
@@ -188,7 +188,7 @@ ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
                          led_service=True,
                          magnetometer_service=False,
                          pin_service=False,
-                         temperature_service=False)
+                         temperature_service=True)
 my_text = 'Hello, world'
 ubit.connect()
 

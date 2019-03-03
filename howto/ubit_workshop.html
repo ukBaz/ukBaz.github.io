@@ -27,10 +27,48 @@
     <p>
         This is an introduction on how you can exchange information between a micro:bit and a Raspberry Pi using
         Bluetooth Low Engergy (BLE).
-    </p>
+    </p><h2>license</h2>
+<footer>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="Creative Commons License" style="border-width:0"
+             src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
+    </a><br />
+    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
+          property="dct:title" rel="dct:type">micro:bit BLE workshop
+    </span>
+    by
+    <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Barry Byford</span>
+    is licensed under a <br>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    <br />Based on work at <a xmlns:dct="http://purl.org/dc/terms/"
+                                href="https://github.com/ukBaz/python-bluezero" rel="dct:source">
+    https://github.com/ukBaz/python-bluezero</a>.
+    <p>First Published: 26-August-2017</p>
+    <p>Updated: 3-March-2018 to match Bluezero v:0.1.0</p>
+</footer>
 </div>
 <P CLASS="pagebreak"></p>
 <div>
+    <h2>Setting Up the micro:bit</h2>
+    <p>
+        We will use <a href="https://makecode.microbit.org">https://makecode.microbit.org</a> to create our own
+        hex file with the required Bluetooth services for this workshop.
+    </p>
+      <p align=center><img alt="Makecode to activity Bluetooth" src="../asset/ubit_workshop/makecode_ble.png"></p>
+    <p>
+        If there are not the Bluetooth commands on the left hand side then click on the cog and choose Extentions.
+        From the list of Extensions, choose Bluetooth and accept that radio will be replaced with Bluetooth.
+    </p>
+    <p>
+        Before saving the program to the micro:bit, click on the cog and select Project Settings.
+        Choose the JustWorks pairing mode.
+    </p>
+    <p align=center><img alt="Makecode Bluetooth pairing modes" src="../asset/ubit_workshop/pairing_settings.png"></p>
+    <p>
+        The micro:bit with this hex file will need to paired with the Raspberry Pi, more on that later.
+        For now we are done with the micro:bit and can switch to setting up the Raspberry Pi.
+    </p>
     <h2>Setting up the Raspberry Pi</h2>
     <p>
         You will need to install the Bluezero package from Python Package Index (PyPI).
@@ -39,52 +77,39 @@
             sudo pip3 install bluezero
         </code>
     </p>
-    <h2>Setting Up the micro:bit</h2>
-    <p>
-        You will download the hex file from the Bitty Software website. The hex file is available at:<br>
-        <a href="http://www.bittysoftware.com/downloads.html#bitty_blue">http://www.bittysoftware.com/downloads.html#bitty_blue</a>
-    </p>
-    <p>
-        You will use the “no pairing required” hex file<br>
-        <img alt="" src="../asset/ubit_workshop/bitty_blue.png">
-    </p>
-    <p>
-        The first time the micro:bit is powered up you will need to rotate it so a circle is drawn on the micro:bit.
-        Once this is done you are ready to connect to it with the Raspberry Pi
-    </p>
 </div>
 <P CLASS="pagebreak"></p>
 <div>
-    <h2>Finding the micro:bit </h2>
+    <h2>Pairing with the micro:bit </h2>
     <p>
         If this is the first time this combination of Raspberry Pi and micro:bit have been used together then you will
-        need to ensure the micro:bit is in the list of known Bluetooth devices on the Raspberry Pi. You will do this
-        using bluetoothctl.
+        need to ensure the micro:bit is in the list of known Bluetooth devices that are paired with the Raspberry Pi.
+        The pairing will be done using bluetoothctl.
     </p>
     <blockquote>
         Note: There is ‘tab’ command completion on commands and addresses available within the bluetoothctl tool.
     </blockquote>
     <blockquote>
-        Note: As Bluetooth addresses are unique this workshop uses the representation of your Raspberry Pi and
-        micro:bit address as xx:xx:xx:xx:xx:xx and yy:yy:yy:yy:yy:yy respectively. Please replace these
+        Note: As Bluetooth addresses are unique, this workshop will representation the Raspberry Pi and
+        micro:bit addresses as xx:xx:xx:xx:xx:xx and yy:yy:yy:yy:yy:yy respectively. Please replace these
         with the actual address of your devices
     </blockquote>
     <h3>Using bluetoothctl</h3>
     <p>
-        You will use the command line tool “bluetoothctl” to discover our micro:bit.<br>
+        The command line tool “bluetoothctl” to discover the micro:bit.<br>
         On the terminal command line type:<br>
         <code>
             $ <mark>bluetoothctl</mark>
         </code>
     </p>
     <p>
-    You will then get the new prompt:<br>
+    The new prompt will be:<br>
         <code>
             [bluetooth]#
         </code>
     </p>
     <p>
-        You can type help to get a full list of the commands.<br>
+        Type help to get a full list of the commands.<br>
         Check that the Bluetooth is switched on on the Raspberry Pi<br>
         Type <mark><code>show</code></mark> and check that you have <code>Powered: yes</code>.<br>
         For example:
@@ -123,21 +148,21 @@ Discovery started
 [NEW] Device yy:yy:yy:yy:yy:yy BBC micro:bit [?????]
 [bluetooth]# <mark>scan off</mark>
 </pre>
-
-    <h3>Connect to micro:bit</h3>
+<P CLASS="pagebreak"></p>
+    <h3>Pair with micro:bit</h3>
     <p>
-        You need to specify the Bluetooth address of your micro:bit (found with the above command) to connect to it.<br>
-        Because you have used the “no pairing required” hex file the micro:bit will become part
-        of the known devices once it has been connected to and allow you to easily access
-        it from the Python code<br>
-        Once connection has happened and a "C" appears on the micro:bit you can disconnect.
+        Using the Bluetooth address of the micro:bit (found with the above command) to connect to it.<br>
+        Because pairing is required with this hex file the micro:bit needs to be put into pairing mode.
+        To do this, hold button A & B and then press and release the reset button on the back of the micro:bit.
+        Once the Bluetooth logo is displayed on the micro:bit you can release all the buttons.
     </p>
     <pre>
-[bluetooth]# <mark>connect yy:yy:yy:yy:yy:yy</mark>
-Attempting to connect to yy:yy:yy:yy:yy:yy
+[bluetooth]# <mark>pair yy:yy:yy:yy:yy:yy</mark>
+Attempting to pair with yy:yy:yy:yy:yy:yy
 [CHG] Device yy:yy:yy:yy:yy:yy Connected: yes
-Connection successful
-[BBC micro:bit [?????]]# <mark>disconnect</mark>
+[CHG] Device yy:yy:yy:yy:yy:yy Connected: no
+[CHG] Device yy:yy:yy:yy:yy:yy Paired: yes
+Pairing successful
     </pre>
 
     <p>
@@ -148,7 +173,6 @@ Connection successful
     </p>
 
 </div>
-<P CLASS="pagebreak"></p>
 <div>
     <h2>Using Python with Bluezero Library</h2>
     <h3>Sending a message to the micro:bit</h3>
@@ -158,7 +182,13 @@ Connection successful
     <pre class="prettyprint">
 from bluezero import microbit
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
-                         device_addr='yy:yy:yy:yy:yy:yy')
+                         device_addr='yy:yy:yy:yy:yy:yy',
+                         accelerometer_service=True,
+                         button_service=True,
+                         led_service=True,
+                         magnetometer_service=False,
+                         pin_service=False,
+                         temperature_service=False)
 my_text = 'Hello, world'
 ubit.connect()
 
@@ -176,23 +206,21 @@ ubit.disconnect()
 import time
 from bluezero import microbit
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
-                         device_addr='yy:yy:yy:yy:yy:yy')
+                         device_addr='yy:yy:yy:yy:yy:yy',
+                         accelerometer_service=True,
+                         button_service=True,
+                         led_service=True,
+                         magnetometer_service=False,
+                         pin_service=False,
+                         temperature_service=True)
 ubit.connect()
 while ubit.button_a < 1:
-    ubit.pixels = [0b00000,
-                   0b01000,
-                   0b11111,
-                   0b01000,
-                   0b00000]
+    ubit.pixels = [0b00000, 0b01000, 0b11111, 0b01000, 0b00000]
     time.sleep(0.5)
     ubit.clear_display()
 
 while ubit.button_b < 1:
-    ubit.pixels = [0b00000,
-                   0b00010,
-                   0b11111,
-                   0b00010,
-                   0b00000]
+    ubit.pixels = [0b00000, 0b00010, 0b11111, 0b00010, 0b00000]
     time.sleep(0.5)
     ubit.clear_display()
 
@@ -200,72 +228,66 @@ ubit.disconnect()
 
     </pre>
 <P CLASS="pagebreak"></p>
-    <h3>Using micro:bit to control Turtle</h3>
+    <h3>Reading values from the micro:bit</h3>
     <p>
-        This last exercise uses information from the micro:bit sensors to control the Turtle graphics
+        This last exercise uses information from the micro:bit sensors to be displayed ont he Raspberry Pi.
     </p>
     <ul>
-        <li>Pressing Button A uses the magnetometer "heading" value to rotate to the Turtle as you rotate the micro:bit</li>
-        <li>Pressing Button B exits the code</li>
-        <li>With no buttons pressed you can move the Turtle forwards and backwards by tilting the micro:bit</li>
+        <li>Pressing Button A prints if the micro:bit is face-up or face-down</li>
+        <li>Pressing Button B print the temperature from the micro:bit</li>
+        <li>Pressing Button A & B exits the code</li>
     </ul>
-
-
     </p>
     <pre class="prettyprint">
-import turtle
 import time
 from bluezero import microbit
-oogway = turtle.Turtle()
+
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
-                         device_addr='yy:yy:yy:yy:yy:yy')
+                         device_addr='yy:yy:yy:yy:yy:yy',
+                         accelerometer_service=True,
+                         button_service=True,
+                         led_service=True,
+                         magnetometer_service=False,
+                         pin_service=False,
+                         temperature_service=True)
 looping = True
 ubit.connect()
-oogway.write('Ready')
-
+print('Connected... Press a button to select mode')
+mode = 0
 while looping:
-    if ubit.button_a > 0:
-        oogway.setheading(ubit.bearing)
-        time.sleep(0.25)
+    if ubit.button_a > 0 and ubit.button_b > 0:
+        mode = 3
+        ubit.pixels = [0b10001, 0b01010, 0b00100, 0b01010, 0b10001]
+        time.sleep(1)
     elif ubit.button_b > 0:
-        ubit.pixels = [0b10001,
-                       0b10001,
-                       0b01110,
-                       0b10001,
-                       0b10001]
-        oogway.write('Exit')
-        looping = False
-    else:
+        mode = 2
+        ubit.pixels = [0b11111, 0b00100, 0b00100, 0b00100, 0b00100]
+
+        time.sleep(0.25)
+    elif ubit.button_a > 0:
+        mode = 1
+        ubit.pixels = [0b11110, 0b10000, 0b11100, 0b10000, 0b10000]
+        time.sleep(0.25)
+
+    if mode == 1:
         x, y, z = ubit.accelerometer
-        if y > 0.5:
-            oogway.backward(10)
-        if y < -0.5:
-            oogway.forward(10)
+        if z < 0:
+            print('Face up')
+        else:
+            print('Face down')
+        time.sleep(0.5)
+    elif mode == 2:
+        print('Temperature:', ubit.temperature)
+        time.sleep(0.5)
+    elif mode == 3:
+        looping = False
+        print('Exiting')
 
 ubit.disconnect()
-turtle.bye()
+
 
     </pre>
 </div>
-<h2>license</h2>
-<footer>
-    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
-        <img alt="Creative Commons License" style="border-width:0"
-             src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
-    </a><br />
-    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text"
-          property="dct:title" rel="dct:type">micro:bit BLE workshop
-    </span>
-    by
-    <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Barry Byford</span>
-    is licensed under a <br>
-    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
-        Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-    <br />Based on work at <a xmlns:dct="http://purl.org/dc/terms/"
-                                href="https://github.com/ukBaz/python-bluezero" rel="dct:source">
-    https://github.com/ukBaz/python-bluezero</a>.
-    <p>First Published: 26-August-2017</p>
-    <p>Updated: 24-March-2018 to match Bluezero v:0.0.5</p>
-</footer>
+
 </body>
 </html>

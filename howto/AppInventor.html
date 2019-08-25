@@ -80,7 +80,7 @@ class SPP:
 
         self.mainloop = GObject.MainLoop()
         adapter_props = dbus.Interface(bus.get_object('org.bluez', '/org/bluez/hci0'),
-                                       'org.freedesktop.DBus.Properties');
+                                       'org.freedesktop.DBus.Properties')
 
         adapter_props.Set('org.bluez.Adapter1', 'Powered', dbus.Boolean(1))
         profile_path = '/foo/bar/profile'
@@ -88,7 +88,7 @@ class SPP:
         opts = {
             'AutoConnect': True,
             'Role': 'server',
-            'Channel': 1,
+            'Channel': dbus.UInt16(1),
             'Name': 'SerialPort'
         }
 

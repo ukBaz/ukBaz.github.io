@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Getting Started &mdash; Python Practice [with unittests] 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Exercise Overview" href="Exercises.html" />
+    <link rel="prev" title="Practice, practice, practice" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Python Practice [with unittests]
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Practice, practice, practice</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#assumptions">Assumptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clone-the-repository">Clone the repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-a-python-virtual-environment">Create a Python Virtual Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-exercise">First Exercise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-tests">Running the tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Exercises.html">Exercise Overview</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Python Practice [with unittests]</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Getting Started</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>We will walk through running the simplest of the exercises.</p>
+<div class="section" id="assumptions">
+<h2>Assumptions<a class="headerlink" href="#assumptions" title="Permalink to this headline">¶</a></h2>
+<p>There is Python 3 installed on your machine and you know how to run it from
+the command line.</p>
+</div>
+<div class="section" id="clone-the-repository">
+<h2>Clone the repository<a class="headerlink" href="#clone-the-repository" title="Permalink to this headline">¶</a></h2>
+<p>Get the Python practice exercises from GitHub. This can be done by going to
+<a class="reference external" href="https://github.com/ukBaz/python-practice-with-unittests">https://github.com/ukBaz/python-practice-with-unittests</a>
+and download the ZIP file.</p>
+<p>Or, if you have git installed on your computer, you can clone it:</p>
+<p><cite>git clone https://github.com/ukBaz/python-practice-with-unittests.git</cite></p>
+<p>This should have created directory called <cite>python-practice-with-unittests</cite> which
+you will need to change into.</p>
+<p><cite>cd python-practice-with-unittests</cite></p>
+</div>
+<div class="section" id="create-a-python-virtual-environment">
+<h2>Create a Python Virtual Environment<a class="headerlink" href="#create-a-python-virtual-environment" title="Permalink to this headline">¶</a></h2>
+<p>A virtual environment can be extremely useful when developing multiple
+projects that require different dependencies and is considered good development
+practice so let’s go ahead and create one.</p>
+<p>On linux &amp; mac <cite>python3 -m venv my_venv</cite> or on Windows <cite>python -m venv my_venv</cite></p>
+<p>This will create a Virtual Environment call my_venv in the local directory.
+You will only have to do the above once.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 18%" />
+<col style="width: 66%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform</p></th>
+<th class="head"><p>Shell</p></th>
+<th class="head"><p>Command to activate virtual environment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td rowspan="3"><p>Posix</p></td>
+<td><p>bash/zsh</p></td>
+<td><p>$ source &lt;venv&gt;/bin/activate</p></td>
+</tr>
+<tr class="row-odd"><td><p>fish</p></td>
+<td><p>$ . &lt;venv&gt;/bin/activate.fish</p></td>
+</tr>
+<tr class="row-even"><td><p>csh/tcsh</p></td>
+<td><p>$ source &lt;venv&gt;/bin/activate.csh</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p>Windows</p></td>
+<td><p>cmd.exe</p></td>
+<td><p>C:&gt; &lt;venv&gt;Scriptsactivate.bat</p></td>
+</tr>
+<tr class="row-even"><td><p>PowerShell</p></td>
+<td><p>PS C:&gt; &lt;venv&gt;ScriptsActivate.ps1</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="first-exercise">
+<h2>First Exercise<a class="headerlink" href="#first-exercise" title="Permalink to this headline">¶</a></h2>
+<p>You will see another directory called <cite>exercise101</cite> that you will need to change
+into.</p>
+<p><cite>cd exercise101</cite></p>
+<p>To create an “Editable” install with all the required development dependencies:</p>
+<p><cite>pip install -e “.[dev]”</cite></p>
+</div>
+<div class="section" id="running-the-tests">
+<h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this headline">¶</a></h2>
+<p>On the command line you will need enter the following command:</p>
+<p><cite>python setup.py test</cite></p>
+<p>Which will give the tests and give similar output to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_ask</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">Test101</span><span class="p">)</span> <span class="o">...</span> <span class="n">FAIL</span>
+<span class="n">test_name</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">Test101</span><span class="p">)</span> <span class="o">...</span> <span class="n">FAIL</span>
+
+<span class="o">======================================================================</span>
+<span class="n">FAIL</span><span class="p">:</span> <span class="n">test_ask</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">Test101</span><span class="p">)</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;tests/test_hello.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">15</span><span class="p">,</span> <span class="ow">in</span> <span class="n">test_ask</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s1">&#39;Python&#39;</span><span class="p">,</span> <span class="n">my_functions</span><span class="o">.</span><span class="n">ask_for_name</span><span class="p">())</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="s1">&#39;Python&#39;</span> <span class="o">!=</span> <span class="kc">None</span>
+
+<span class="o">======================================================================</span>
+<span class="n">FAIL</span><span class="p">:</span> <span class="n">test_name</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">Test101</span><span class="p">)</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;tests/test_hello.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">11</span><span class="p">,</span> <span class="ow">in</span> <span class="n">test_name</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s1">&#39;Hello, Monty</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fake_out</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="s1">&#39;Hello, Monty</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span>
+<span class="o">-</span> <span class="n">Hello</span><span class="p">,</span> <span class="n">Monty</span>
+
+
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">Ran</span> <span class="mi">2</span> <span class="n">tests</span> <span class="ow">in</span> <span class="mf">0.001</span><span class="n">s</span>
+
+<span class="n">FAILED</span> <span class="p">(</span><span class="n">failures</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will show that two tests have run and both have failed. You will now need
+to open up your favourite code editor on the <cite>hello_world/my_functions.py</cite> file.</p>
+<p>You will see a function that is</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ask_for_name</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The task is to replace the Python <cite>pass</cite> keyword with your code to get the
+unittest.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ask_for_name</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;What is your name?&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If we run the tests again we will see that one is now passing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_ask</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">Test101</span><span class="p">)</span> <span class="o">...</span> <span class="n">ok</span>
+<span class="n">test_name</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">Test101</span><span class="p">)</span> <span class="o">...</span> <span class="n">FAIL</span>
+
+<span class="o">======================================================================</span>
+<span class="n">FAIL</span><span class="p">:</span> <span class="n">test_name</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">Test101</span><span class="p">)</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;tests/test_hello.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">11</span><span class="p">,</span> <span class="ow">in</span> <span class="n">test_name</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s1">&#39;Hello, Monty</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fake_out</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="s1">&#39;Hello, Monty</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span>
+<span class="o">-</span> <span class="n">Hello</span><span class="p">,</span> <span class="n">Monty</span>
+
+
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">Ran</span> <span class="mi">2</span> <span class="n">tests</span> <span class="ow">in</span> <span class="mf">0.001</span><span class="n">s</span>
+
+<span class="n">FAILED</span> <span class="p">(</span><span class="n">failures</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>So now let’s see if we can get the other test to pass. Replace</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Hello, {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Both tests should now be passing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_ask</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">Test101</span><span class="p">)</span> <span class="o">...</span> <span class="n">ok</span>
+<span class="n">test_name</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">Test101</span><span class="p">)</span> <span class="o">...</span> <span class="n">ok</span>
+
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">Ran</span> <span class="mi">2</span> <span class="n">tests</span> <span class="ow">in</span> <span class="mf">0.001</span><span class="n">s</span>
+
+<span class="n">OK</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Exercises.html" class="btn btn-neutral float-right" title="Exercise Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="intro.html" class="btn btn-neutral float-left" title="Practice, practice, practice" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Barry Byford
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

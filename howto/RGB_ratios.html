@@ -13085,7 +13085,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>These are notes about attempting the Computer Vision (CV) for <a href="https://piwars.org/2020-competition/challenges/eco-disaster/">Eco-Disaster</a> (Sort the Barrels) challenge for PiWars 2020.
-I am not competiting in the competition this year so why am I looking at this? There was some chatter on Twitter about creating a "CVZero" library to help contestants with a simplified Computer Vision  library. Secondly, I saw Brian Starkey's <a href="https://piwarsmc.org/programme.html#brians">Computer Vision presentation</a> at PiWars Mini Conference on what he had done last year without using a recognised CV library. So I attended the CVzero hackathon to see if I could help and learn some things along the way.
+I am not competing in the competition this year so why am I looking at this? There was some chatter on Twitter about creating a "CVZero" library to help contestants with a simplified Computer Vision  library. Secondly, I saw Brian Starkey's <a href="https://piwarsmc.org/programme.html#brians">Computer Vision presentation</a> at PiWars Mini Conference on what he had done last year without using a recognised CV library. So I attended the CVzero hackathon to see if I could help and learn some things along the way.
 After experimenting with different options and colour spaces, the experimentations below looks to use the numpy library to try to capture the red, green, blue, yellow objects of the Eco-Disaster challenge.</p>
 
 </div>
@@ -13124,11 +13124,9 @@ After experimenting with different options and colour spaces, the experimentatio
 <span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="c1"># the `scikit-image` package</span>
-<span class="kn">import</span> <span class="nn">skimage.color</span>
 <span class="kn">import</span> <span class="nn">scipy.ndimage</span>
-<span class="kn">import</span> <span class="nn">skimage.filters</span>
+<span class="c1"># For visualising results only</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
 
     </div>
@@ -13173,11 +13171,6 @@ After experimenting with different options and colour spaces, the experimentatio
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">blur_img</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">fimg</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="n">fimgf</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">fimg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">alpha</span> <span class="o">=</span> <span class="mi">30</span>
-    <span class="n">img_s</span> <span class="o">=</span> <span class="n">fimg</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">fimg</span> <span class="o">-</span> <span class="n">fimgf</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">img_s</span>
 
 <span class="k">def</span> <span class="nf">get_red</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">img</span><span class="p">[:,:,</span><span class="mi">0</span><span class="p">]</span>
@@ -13197,7 +13190,7 @@ After experimenting with different options and colour spaces, the experimentatio
         <span class="n">mask_red</span> <span class="o">=</span> <span class="n">test1</span> <span class="o">&amp;</span> <span class="n">test2</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mask_red</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">red_lay</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">skimage</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">mask_red</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask_red</span>
 
 <span class="k">def</span> <span class="nf">blue_mask</span><span class="p">(</span><span class="n">red_lay</span><span class="p">,</span> <span class="n">green_lay</span><span class="p">,</span> <span class="n">blue_lay</span><span class="p">):</span>
     <span class="c1"># print(&#39;Blue mask&#39;)</span>
@@ -13210,7 +13203,7 @@ After experimenting with different options and colour spaces, the experimentatio
         <span class="n">mask_blue</span> <span class="o">=</span> <span class="n">test1</span> <span class="o">&amp;</span> <span class="n">test2</span> <span class="o">&amp;</span> <span class="n">test3</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mask_blue</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">blue_lay</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">skimage</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">mask_blue</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask_blue</span>
 
 <span class="k">def</span> <span class="nf">green_mask</span><span class="p">(</span><span class="n">red_lay</span><span class="p">,</span> <span class="n">green_lay</span><span class="p">,</span> <span class="n">blue_lay</span><span class="p">):</span>
     <span class="c1"># print(&#39;Green mask&#39;)</span>
@@ -13222,7 +13215,7 @@ After experimenting with different options and colour spaces, the experimentatio
         <span class="n">mask_green</span> <span class="o">=</span> <span class="n">test1</span> <span class="o">&amp;</span> <span class="n">test2</span> <span class="o">&amp;</span> <span class="n">test3</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mask_green</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">green_lay</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">skimage</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">mask_green</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask_green</span>
 
 <span class="k">def</span> <span class="nf">yellow_mask</span><span class="p">(</span><span class="n">red_lay</span><span class="p">,</span> <span class="n">green_lay</span><span class="p">,</span> <span class="n">blue_lay</span><span class="p">):</span>
     <span class="c1"># print(&#39;Yellow Mask&#39;)</span>
@@ -13233,7 +13226,7 @@ After experimenting with different options and colour spaces, the experimentatio
         <span class="n">mask_yellow</span> <span class="o">=</span> <span class="n">test1</span> <span class="o">&amp;</span> <span class="n">test2</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mask_yellow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">red_lay</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">skimage</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">mask_yellow</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask_yellow</span>
     
 </pre></div>
 
@@ -13249,24 +13242,24 @@ After experimenting with different options and colour spaces, the experimentatio
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">),</span> <span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">36</span><span class="p">))</span>
+<span class="c1"># Step through test images and display mask for each colour</span>
 <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">this_img</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">images</span><span class="p">):</span>
     <span class="n">red_c</span> <span class="o">=</span> <span class="n">blur_img</span><span class="p">(</span><span class="n">get_red</span><span class="p">(</span><span class="n">this_img</span><span class="p">))</span>
     <span class="n">green_c</span> <span class="o">=</span> <span class="n">blur_img</span><span class="p">(</span><span class="n">get_green</span><span class="p">(</span><span class="n">this_img</span><span class="p">))</span>
     <span class="n">blue_c</span> <span class="o">=</span> <span class="n">blur_img</span><span class="p">(</span><span class="n">get_blue</span><span class="p">(</span><span class="n">this_img</span><span class="p">))</span>
-    <span class="c1"># print(&#39;row=&#39;, row, red_c[80, 180], green_c[80, 180], blue_c[80, 180])</span>
     <span class="n">rm</span> <span class="o">=</span> <span class="n">red_mask</span><span class="p">(</span><span class="n">red_c</span><span class="p">,</span> <span class="n">green_c</span><span class="p">,</span> <span class="n">blue_c</span><span class="p">)</span>
     <span class="n">bm</span> <span class="o">=</span> <span class="n">blue_mask</span><span class="p">(</span><span class="n">red_c</span><span class="p">,</span> <span class="n">green_c</span><span class="p">,</span> <span class="n">blue_c</span><span class="p">)</span>
     <span class="n">gm</span> <span class="o">=</span> <span class="n">green_mask</span><span class="p">(</span><span class="n">red_c</span><span class="p">,</span> <span class="n">green_c</span><span class="p">,</span> <span class="n">blue_c</span><span class="p">)</span>
     <span class="n">ym</span> <span class="o">=</span> <span class="n">yellow_mask</span><span class="p">(</span><span class="n">red_c</span><span class="p">,</span> <span class="n">green_c</span><span class="p">,</span> <span class="n">blue_c</span><span class="p">)</span>
     <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">this_img</span><span class="p">)</span>
     <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">rm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">rm</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;red mask&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">bm</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;blue mask&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">gm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">gm</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;green mask&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">ym</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">ym</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ax</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;yellow mask&#39;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -13319,9 +13312,7 @@ After experimenting with different options and colour spaces, the experimentatio
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">centre_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TEST_DATA&quot;</span><span class="p">),</span> <span class="s1">&#39;actual&#39;</span><span class="p">,</span> <span class="s1">&#39;scene19_160_120.jpg&#39;</span><span class="p">)</span>
-<span class="n">single_img</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">centre_file</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">process_image</span><span class="p">(</span><span class="n">this_img</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">process_image</span><span class="p">(</span><span class="n">this_img</span><span class="p">):</span>
     <span class="n">red_c</span> <span class="o">=</span> <span class="n">blur_img</span><span class="p">(</span><span class="n">get_red</span><span class="p">(</span><span class="n">this_img</span><span class="p">))</span>
     <span class="n">green_c</span> <span class="o">=</span> <span class="n">blur_img</span><span class="p">(</span><span class="n">get_green</span><span class="p">(</span><span class="n">this_img</span><span class="p">))</span>
     <span class="n">blue_c</span> <span class="o">=</span> <span class="n">blur_img</span><span class="p">(</span><span class="n">get_blue</span><span class="p">(</span><span class="n">this_img</span><span class="p">))</span>
@@ -13331,26 +13322,44 @@ After experimenting with different options and colour spaces, the experimentatio
     <span class="n">ym</span> <span class="o">=</span> <span class="n">yellow_mask</span><span class="p">(</span><span class="n">red_c</span><span class="p">,</span> <span class="n">green_c</span><span class="p">,</span> <span class="n">blue_c</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">rm</span><span class="p">,</span> <span class="n">bm</span><span class="p">,</span> <span class="n">gm</span><span class="p">,</span> <span class="n">ym</span>
 
+<span class="k">def</span> <span class="nf">feature_centre</span><span class="p">(</span><span class="n">img_mask</span><span class="p">):</span>
+    <span class="n">img_lbl</span><span class="p">,</span> <span class="n">img_features</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">img_mask</span><span class="p">)</span>
+    <span class="n">img_com</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">img_mask</span><span class="p">,</span> 
+                                           <span class="n">img_lbl</span><span class="p">,</span> 
+                                           <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">img_features</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">img_com</span>
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">centre_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TEST_DATA&quot;</span><span class="p">),</span> <span class="s1">&#39;actual&#39;</span><span class="p">,</span> <span class="s1">&#39;scene19_160_120.jpg&#39;</span><span class="p">)</span>
+<span class="n">single_img</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">centre_file</span><span class="p">)</span>
+
+<span class="c1"># Get object locations</span>
 <span class="n">redm</span><span class="p">,</span> <span class="n">bluem</span><span class="p">,</span> <span class="n">greenm</span><span class="p">,</span> <span class="n">yellowm</span> <span class="o">=</span> <span class="n">process_image</span><span class="p">(</span><span class="n">single_img</span><span class="p">)</span>
+<span class="n">red_com</span> <span class="o">=</span> <span class="n">feature_centre</span><span class="p">(</span><span class="n">redm</span><span class="p">)</span>
+<span class="n">grn_com</span> <span class="o">=</span> <span class="n">feature_centre</span><span class="p">(</span><span class="n">greenm</span><span class="p">)</span>
+<span class="n">blue_com</span> <span class="o">=</span> <span class="n">feature_centre</span><span class="p">(</span><span class="n">bluem</span><span class="p">)</span>
+<span class="n">yel_com</span> <span class="o">=</span> <span class="n">feature_centre</span><span class="p">(</span><span class="n">yellowm</span><span class="p">)</span>
+
+<span class="c1"># Display information for debug</span>
 <span class="n">cvzero_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">single_img</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-<span class="n">cvzero_img</span><span class="p">[</span><span class="n">redm</span><span class="o">==</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">cvzero_img</span><span class="p">[</span><span class="n">greenm</span><span class="o">==</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">cvzero_img</span><span class="p">[</span><span class="n">yellowm</span><span class="o">==</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">cvzero_img</span><span class="p">[</span><span class="n">bluem</span><span class="o">==</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
-<span class="n">red_lbl</span><span class="p">,</span> <span class="n">red_features</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">redm</span><span class="p">))</span>
-<span class="n">red_com</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">redm</span><span class="p">),</span> <span class="n">red_lbl</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">red_features</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
-<span class="n">yel_lbl</span><span class="p">,</span> <span class="n">yel_features</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">yellowm</span><span class="p">))</span>
-<span class="n">yel_com</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">yellowm</span><span class="p">),</span> <span class="n">yel_lbl</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">yel_features</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
-<span class="n">blue_lbl</span><span class="p">,</span> <span class="n">blue_features</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">bluem</span><span class="p">))</span>
-<span class="n">blue_com</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">bluem</span><span class="p">),</span> <span class="n">blue_lbl</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">blue_features</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
-<span class="n">grn_lbl</span><span class="p">,</span> <span class="n">grn_features</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">greenm</span><span class="p">))</span>
-<span class="n">grn_com</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">greenm</span><span class="p">),</span> <span class="n">grn_lbl</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">grn_features</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;cvzero img unique&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">cvzero_img</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;red labels&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">red_lbl</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;red features&#39;</span><span class="p">,</span> <span class="n">red_features</span><span class="p">)</span>
+<span class="n">cvzero_img</span><span class="p">[</span><span class="n">redm</span><span class="o">==</span><span class="kc">True</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">cvzero_img</span><span class="p">[</span><span class="n">greenm</span><span class="o">==</span><span class="kc">True</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">cvzero_img</span><span class="p">[</span><span class="n">yellowm</span><span class="o">==</span><span class="kc">True</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">cvzero_img</span><span class="p">[</span><span class="n">bluem</span><span class="o">==</span><span class="kc">True</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;red features&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">red_com</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;red Centre of Mass&#39;</span><span class="p">,</span> <span class="n">red_com</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;yellow labels&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">yel_lbl</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;yellow features&#39;</span><span class="p">,</span> <span class="n">yel_features</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;yellow features&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">yel_com</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;yellow Centre of Mass&#39;</span><span class="p">,</span> <span class="n">yel_com</span><span class="p">)</span>
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">single_img</span><span class="p">)</span>
@@ -13375,11 +13384,8 @@ After experimenting with different options and colour spaces, the experimentatio
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>cvzero img unique [  0 255]
-red labels [0 1 2]
-red features 2
+<pre>red features 2
 red Centre of Mass [(94.69623059866963, 23.379157427937916), (99.74691358024691, 108.24845679012346)]
-yellow labels [0 1]
 yellow features 1
 yellow Centre of Mass [(53.13689974726201, 121.64005897219882)]
 </pre>
@@ -13401,19 +13407,6 @@ yellow Centre of Mass [(53.13689974726201, 121.64005897219882)]
 
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
 </div>
 </div>
 

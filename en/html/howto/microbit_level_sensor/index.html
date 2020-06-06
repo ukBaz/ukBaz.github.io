@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Liquid Level Sensing &#8212; ukBaz 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Capacitive Touch With micro:bit" href="../microbit_touch/index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          ukBaz</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Articles:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../microbit_touch/index.html">Capacitive Touch With micro:bit</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Liquid Level Sensing</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Liquid Level Sensing</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="../microbit_touch/index.html" title="Previous Chapter: Capacitive Touch With micro:bit"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Capacitive To...</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../../_sources/howto/microbit_level_sensor/index.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="liquid-level-sensing">
+<h1>Liquid Level Sensing<a class="headerlink" href="#liquid-level-sensing" title="Permalink to this headline">¶</a></h1>
+<p>There have been a number of posts on Twitter where people have used
+BBC micro:bits to measure water levels or soil moisture.</p>
+<p>Normally these are done with resistive sensing which has a number of
+disadvantages such as corrosion of the sensor.</p>
+<p>It seemed like this was a good opportunity to apply my <a class="reference external" href="../microbit_touch/">capacitive
+sensing</a> learning to a different application
+area.</p>
+<p>If you want some background on how liquid level sensing works with
+capacitance then this video is very good:</p>
+<iframe width="560" height="315"
+    src="https://www.youtube.com/embed/0du-QU1Q0T4"
+    frameborder="0" allow="accelerometer;
+    encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+</iframe><p>To create the sensor, two strips of copper tape were stuck onto cardbaord
+and placed inside of a freezer bag.
+It is important to get the two strips parallel and close as possible
+without touching.
+The cardboard is placed in a “freezer bag” to stop them getting wet.
+One of the copper strips is connected to ping <em>GND</em> and the other
+goes to <em>pin 0</em></p>
+<p>Here is a video of the initial experiment I did with this:</p>
+<iframe width="560" height="315"
+    src="https://www.youtube.com/embed/8eb3Hkf0lko"
+    frameborder="0" allow="accelerometer;
+    encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+</iframe><p>Using the following code:</p>
+<img alt="../../_images/level_sensor_code.jpeg" src="../../_images/level_sensor_code.jpeg" />
+<p>This can also be used to measure the change in moisture in a plant pot.
+Although maybe the sensor needs to be redesigned a bit to fit into
+the ground better.</p>
+<img alt="../../_images/plant_moisture.jpeg" src="../../_images/plant_moisture.jpeg" />
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Barry Byford.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.<br/>
+    </p>
+  </div>
+</footer>
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+    <img alt="Creative Commons Licence" style="border-width:0"
+         src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />
+This work is licensed under a
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+    Creative Commons Attribution 4.0 International License</a>.
+
+  </body>
+</html>

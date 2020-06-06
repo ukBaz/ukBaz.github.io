@@ -81,7 +81,8 @@ Is Touched
 This is very similar to the calibration step except that we are compare the value we get from the sensor
 to the value from the reference value when no hand was present. If the reading is higher then we can assume a
 hand is present.
-|To make the reading more reliable we we add a margin to the reference value.
+
+To make the reading more reliable we add a margin to the reference value.
 
 Running On Batteries
 ====================

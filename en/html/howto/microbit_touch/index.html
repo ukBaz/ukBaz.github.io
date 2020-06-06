@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Capacitive Touch With micro:bit &#8212; ukBaz 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Welcome to ukBaz’s nots!" href="../../index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          ukBaz</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Articles:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Capacitive Touch With micro:bit</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Capacitive Touch With micro:bit</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#goal">Goal</a></li>
+<li><a class="reference internal" href="#capacitive-not-resistive">Capacitive not Resistive</a></li>
+<li><a class="reference internal" href="#sensing-pin-code">Sensing Pin Code</a></li>
+<li><a class="reference internal" href="#establishing-a-reference">Establishing A Reference</a></li>
+<li><a class="reference internal" href="#is-touched">Is Touched</a></li>
+<li><a class="reference internal" href="#running-on-batteries">Running On Batteries</a></li>
+<li><a class="reference internal" href="#bluetooth-beacons">Bluetooth Beacons</a></li>
+<li><a class="reference internal" href="#where-next">Where next</a></li>
+<li><a class="reference internal" href="#micro-bit-code">micro:bit Code</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="../../index.html" title="Previous Chapter: Welcome to ukBaz’s nots!"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Welcome to uk...</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../../_sources/howto/microbit_touch/index.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="capacitive-touch-with-micro-bit">
+<h1>Capacitive Touch With micro:bit<a class="headerlink" href="#capacitive-touch-with-micro-bit" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<iframe class="center" width="560" height="315" src="https://www.youtube.com/embed/lO1UFwdejuk" frameborder="0"
+    allowfullscreen></iframe><p>I can’t pinpoint the exact moment when I started to get curious about including “home made” capacitive touch
+sensors in to one of my projects. I suspect it was an accumulation of things.</p>
+<p>There was that occasion when a student on one of my workshops was fascinated by a “button” capacitive sensor
+we were using. They wanted to understand how it was triggering before their finger actually touched it. This
+resulted in a great discussion about electric fields and capacitance.</p>
+<p>There is that poster that I walk by regularly showing music technology which has a graphic on it that looks like
+a “play” button. I keep thinking that the poster needs to be upgraded so people can press the play button and music
+happens.</p>
+<p>I regularly read about projects from the team at <a class="reference external" href="https://www.bareconductive.com/">Bare Conductive</a>
+featuring painted sensors. This results in my asking lots of questions about screen printing to my sister-in-law.</p>
+<p>Clearly this idea has been building for a while and at the start of this year I ordered some
+<a class="reference external" href="https://shop.pimoroni.com/products/paint-pen-10ml">Bare Conductive Paint</a> and
+<a class="reference external" href="https://shop.pimoroni.com/products/copper-tape">copper tape</a> from Pimoroni to take the idea to the next level.</p>
+<p>The final piece of the puzzle was a great article from
+<a class="reference external" href="https://www.allaboutcircuits.com/technical-articles/circuits-and-techniques-for-implementing-capacitive-touch-sensing/">About Circuits</a>.
+explaining how capacitive touch sensors could be done with a single pin on a modern micro-controller.</p>
+</div>
+<div class="section" id="goal">
+<h2>Goal<a class="headerlink" href="#goal" title="Permalink to this headline">¶</a></h2>
+<p>Capacitive Touch Sensors are not new. I have seen a number of different options out there for makers that do
+the job really well so why didn’t I go for one of them?</p>
+<p>The short answer is form factor. If I was going to update that poster I needed something that could be hidden
+behind the frame of the poster. This constraint formed the idea that the sensor would be small and battery powered
+communicating with something bigger that played the sound.</p>
+<p>This drove the decision to experiment with the micro:bit to see if it could do the capacitive touch sensing.</p>
+</div>
+<div class="section" id="capacitive-not-resistive">
+<h2>Capacitive not Resistive<a class="headerlink" href="#capacitive-not-resistive" title="Permalink to this headline">¶</a></h2>
+<p>By default the micro:bit does support touch but it is resistive touch rather than capacitive touch. This is
+described in the <a class="reference external" href="https://lancaster-university.github.io/microbit-docs/ubit/io/#overview">runtime documentation</a>
+as <em>“Some pins can also perform basic touch sensing through resistance detection.”</em></p>
+<p>Resistive touch would not work for the poster upgrade idea as you have to physically touch the sensor and be connected
+to the GND pin of the micro:bit. This is why capacitive sensing is so good. The sensor could be behind the poster
+but it would still sense the hand through the poster. It also does not require the user to be holding a GND wire.</p>
+</div>
+<div class="section" id="sensing-pin-code">
+<h2>Sensing Pin Code<a class="headerlink" href="#sensing-pin-code" title="Permalink to this headline">¶</a></h2>
+<img alt="../../_images/microbit-read_pin.png" src="../../_images/microbit-read_pin.png" />
+<p>The core functionality of the code is the switching of the pin (P1) between being a digital output (with a high
+value) and an analogue input. The capacitance introduce by a hand being present will cause the value read to be higher.</p>
+</div>
+<div class="section" id="establishing-a-reference">
+<h2>Establishing A Reference<a class="headerlink" href="#establishing-a-reference" title="Permalink to this headline">¶</a></h2>
+<img alt="../../_images/microbit_calibration.png" src="../../_images/microbit_calibration.png" />
+<p>We need to calibrate our sensor. We do this by taking a reading when no hand is present on the sensor.
+We read the value from the sensor a number of times and average the value to get a more stable value</p>
+</div>
+<div class="section" id="is-touched">
+<h2>Is Touched<a class="headerlink" href="#is-touched" title="Permalink to this headline">¶</a></h2>
+<img alt="../../_images/microbit-is-touched.png" src="../../_images/microbit-is-touched.png" />
+<p>This is very similar to the calibration step except that we are compare the value we get from the sensor
+to the value from the reference value when no hand was present. If the reading is higher then we can assume a
+hand is present.</p>
+<p>To make the reading more reliable we add a margin to the reference value.</p>
+</div>
+<div class="section" id="running-on-batteries">
+<h2>Running On Batteries<a class="headerlink" href="#running-on-batteries" title="Permalink to this headline">¶</a></h2>
+<p>As you saw in the video at the top of the page, a promising start was made and the code seem to be enough to
+detect a hand about to touch the sensor. Readings from the sensor showed good values that
+clearly crossed the threshold value that had been set.
+The Y value on the chart is the value from the micro:bit ADC which represents about 225mV peek-to-peek.</p>
+<img alt="../../_images/grounded.png" src="../../_images/grounded.png" />
+<p>When I ran the same experiment with the micro:bit on batteries the values were not as large. In fact they were
+tiny coming out at about 9.6mV peek-to-peek. Experimenting with the reference value meant I could
+(as in the graph below) get a successful result. However it was not a reliable or predictable result.
+There was an issue!</p>
+<img alt="../../_images/floating.png" src="../../_images/floating.png" />
+<p>The received wisdom from the people I turned to for help was that it worked when the micro:bit was powered by the
+USB cable via the computer because there was a route to ground. When on batteries the whole circuit was floating.</p>
+<p>Introducing some kind of ground plane into the sensor design seemed to be what I was being advised. After a few
+iteration of different designs progress was not being made. In frustration I attached crocodile clip from the
+GND pin of the micro:bit to copper tape pattern I had been experimenting with on the bottom of the box. BINGO!
+We were back in business.</p>
+<img alt="../../_images/top_and_bottom.png" src="../../_images/top_and_bottom.png" />
+<p>While only ~48mV peek-to-peek, it is enough to get a consistent and reliable touch sensor even through a poster.</p>
+</div>
+<div class="section" id="bluetooth-beacons">
+<h2>Bluetooth Beacons<a class="headerlink" href="#bluetooth-beacons" title="Permalink to this headline">¶</a></h2>
+<img alt="../../_images/beacons.png" src="../../_images/beacons.png" />
+<p>One of the great things about the micro:bit is it has great Bluetooth support. Bluetooth will allow the sensor
+to communicate back to something like a Raspberry Pi about its status.</p>
+<p>One project idea would involve having more sensors than the number of Bluetooth connections a Raspberry Pi can
+support. This is only a limitation if you want the Raspberry Pi to send information back to the sensor.</p>
+<p>If the sensor was only to broadcast then the Raspberry Pi could listen for the status from many sensors. In the
+code above we change the &lt;code&gt;instance&lt;/code&gt; value to represent if the sensor is triggered or not.</p>
+</div>
+<div class="section" id="where-next">
+<h2>Where next<a class="headerlink" href="#where-next" title="Permalink to this headline">¶</a></h2>
+<p>These initial tests have encouraged me to attempt to implement a project with capacitive sensing and a micro:bit.</p>
+<p>Exactly what that project will be is still to be decided as it looks like there might be a few issues to
+solve still. This means it will not be anything too ambitious (or expensive).</p>
+</div>
+<div class="section" id="micro-bit-code">
+<h2>micro:bit Code<a class="headerlink" href="#micro-bit-code" title="Permalink to this headline">¶</a></h2>
+<p>For reference here is the code that was used for these initial tests:</p>
+<img alt="../../_images/microbit-cap-sense.png" src="../../_images/microbit-cap-sense.png" />
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Barry Byford.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.<br/>
+    </p>
+  </div>
+</footer>
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+    <img alt="Creative Commons Licence" style="border-width:0"
+         src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />
+This work is licensed under a
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+    Creative Commons Attribution 4.0 International License</a>.
+
+  </body>
+</html>

@@ -13,3 +13,4 @@ Welcome to Barry's Notes!
    howto/microbit_touch/index
    howto/microbit_level_sensor/index
 
+   reference/bluetooth_overview/index

@@ -45,7 +45,7 @@
                                 href="https://github.com/ukBaz/python-bluezero" rel="dct:source">
     https://github.com/ukBaz/python-bluezero</a>.
     <p>First Published: 26-August-2017</p>
-    <p>Updated: 3-March-2018 to match Bluezero v:0.1.0</p>
+    <p>Updated: 09-January-2021 to match Bluezero v:0.4.0</p>
 </footer>
 </div>
 <P CLASS="pagebreak"></p>
@@ -72,7 +72,8 @@
     <h2>Setting up the Raspberry Pi</h2>
     <p>
         You will need to install the Bluezero package from Python Package Index (PyPI).
-        These instructions are targeted at a Raspberry Pi running a Raspbian Stretch release:<br>
+        These instructions are targeted at a Raspberry Pi running an up-to-date
+        Raspberry Pi OS release:<br>
         <code>
             sudo pip3 install bluezero
         </code>
@@ -182,13 +183,7 @@ Pairing successful
     <pre class="prettyprint">
 from bluezero import microbit
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
-                         device_addr='yy:yy:yy:yy:yy:yy',
-                         accelerometer_service=True,
-                         button_service=True,
-                         led_service=True,
-                         magnetometer_service=False,
-                         pin_service=False,
-                         temperature_service=True)
+                         device_addr='yy:yy:yy:yy:yy:yy')
 my_text = 'Hello, world'
 ubit.connect()
 
@@ -206,13 +201,7 @@ ubit.disconnect()
 import time
 from bluezero import microbit
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
-                         device_addr='yy:yy:yy:yy:yy:yy',
-                         accelerometer_service=True,
-                         button_service=True,
-                         led_service=True,
-                         magnetometer_service=False,
-                         pin_service=False,
-                         temperature_service=True)
+                         device_addr='yy:yy:yy:yy:yy:yy')
 ubit.connect()
 while ubit.button_a < 1:
     ubit.pixels = [0b00000, 0b01000, 0b11111, 0b01000, 0b00000]
@@ -243,13 +232,7 @@ import time
 from bluezero import microbit
 
 ubit = microbit.Microbit(adapter_addr='xx:xx:xx:xx:xx:xx',
-                         device_addr='yy:yy:yy:yy:yy:yy',
-                         accelerometer_service=True,
-                         button_service=True,
-                         led_service=True,
-                         magnetometer_service=False,
-                         pin_service=False,
-                         temperature_service=True)
+                         device_addr='yy:yy:yy:yy:yy:yy')
 looping = True
 ubit.connect()
 print('Connected... Press a button to select mode')

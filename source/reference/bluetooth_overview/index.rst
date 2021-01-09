@@ -26,7 +26,7 @@ starting.
 Bad Information
 ===============
 
-Many tutorials on the internet are done with command-line that have been
+Many tutorials on the internet are done with command-line tools that have been
 deprecated, such as hcitool and hcidump.
 If you see tutorials using the `HCI (Host Controller Interface)
 <https://en.wikipedia.org/wiki/List_of_Bluetooth_protocols#HCI>`_ socket
@@ -35,7 +35,7 @@ to stay away.
 
 The command-line tools recommended by the BlueZ developers are
 `bluetoothctl` or, if you need more control, `btmgmt`. And instead of using
-hcidump, use `btmon`.
+`hcidump`, use `btmon`.
 
 I would also be very nervous about using a library that uses `HCI sockets`
 for interfacing with the Bluetooth hardware on Linux. More on the different

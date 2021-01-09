@@ -4,9 +4,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Using Python For Bluetooth &#8212; ukBaz 0.1.0 documentation</title>
-    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
@@ -160,14 +161,14 @@ be of some help to someone coming to the topic a new.</p>
 starting.</p>
 <div class="section" id="bad-information">
 <h2>Bad Information<a class="headerlink" href="#bad-information" title="Permalink to this headline">¶</a></h2>
-<p>Many tutorials on the internet are done with command-line that have been
+<p>Many tutorials on the internet are done with command-line tools that have been
 deprecated, such as hcitool and hcidump.
 If you see tutorials using the <a class="reference external" href="https://en.wikipedia.org/wiki/List_of_Bluetooth_protocols#HCI">HCI (Host Controller Interface)</a> socket
 then it is either out-of-date or at such a low level that it is best
 to stay away.</p>
 <p>The command-line tools recommended by the BlueZ developers are
 <cite>bluetoothctl</cite> or, if you need more control, <cite>btmgmt</cite>. And instead of using
-hcidump, use <cite>btmon</cite>.</p>
+<cite>hcidump</cite>, use <cite>btmon</cite>.</p>
 <p>I would also be very nervous about using a library that uses <cite>HCI sockets</cite>
 for interfacing with the Bluetooth hardware on Linux. More on the different
 programming interfaces later.</p>
@@ -414,7 +415,7 @@ Profile) thanks to this submission: <a class="reference external" href="https://
     </p>
     <p>
         &copy; Copyright 2020, Barry Byford.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.0.<br/>
     </p>
   </div>
 </footer>

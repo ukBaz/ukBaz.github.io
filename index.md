@@ -12,6 +12,7 @@
 - [micro:bit Radio Packets](./howto/ubit_radio.html)
 - [Using PyObject for D-Bus](./howto/python_gio.md)
 - [RGB Ratios in PiWars](./howto/RGB_ratios.html)
+- [Python Powered Party Popper Puller](./howto/party_popper.html)
 
 
 ---

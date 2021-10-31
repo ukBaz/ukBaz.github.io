@@ -26,9 +26,9 @@ starting.
 
 Many tutorials on the internet are done with command-line tools that have been
 deprecated, such as hcitool and hcidump.
-If you see tutorials using the `HCI (Host Controller Interface)
-<https://en.wikipedia.org/wiki/List_of_Bluetooth_protocols#HCI>`_ socket
-then it is either out-of-date or at such a low level that it is best
+If you see tutorials using the 
+[HCI (Host Controller Interface)](https://en.wikipedia.org/wiki/List_of_Bluetooth_protocols#HCI)
+socket then it is either out-of-date or at such a low level that it is best
 to stay away.
 
 The command-line tools recommended by the BlueZ developers are
@@ -46,9 +46,9 @@ people show their frustration with the way that BlueZ handles things.
 
 And I see peoples point. An example is that the HCI tools were deprecated and
 removed. It is hard to find tutorials on how to use the new tools and answers
-to `questions on the mailing list
-<https://www.spinics.net/lists/linux-bluetooth/msg70489.html>`_ expect a
-certain level of knowledge. It is also common for questions to go unanswered
+to 
+[questions on the mailing list](https://www.spinics.net/lists/linux-bluetooth/msg70489.html)
+expect a  certain level of knowledge. It is also common for questions to go unanswered
 on the mailing list. This is Open Source so they don't owe anyone an answer.
 However, I have also seen the developers show their frustration that people
 go off and do crazy things rather than how they had intended things to work.
@@ -62,8 +62,8 @@ Having said all of that, the developers have settled on the DBus API and
 it is getting better and better. The biggest barrier for most people is
 finding the "on-ramp" to learning about how to use it.
 
-There are examples `Python examples
-<https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/test/test-profile>`_
+There are examples 
+[Python examples](https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/test/test-profile)
 in the repository, but frankly they are often of limited value.
 
 # BlueZ API
@@ -77,8 +77,8 @@ As I said earlier, this bypasses the `bluetoothd` that is running on the
 Linux system that is used by the desktop tools. Using this is not a great
 idea unless you really, really know what you are doing.
 
-All the information is available in the Bluetooth `Core Specification
-<https://www.bluetooth.com/specifications/bluetooth-core-specification/>`_
+All the information is available in the Bluetooth 
+[Core Specification](https://www.bluetooth.com/specifications/bluetooth-core-specification/)
 which runs to about 3,256 pages for the 5.2 version of the spec.
 
 ## MGMT Socket

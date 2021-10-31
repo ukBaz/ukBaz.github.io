@@ -3,7 +3,8 @@ title: ukBaz Notes
 description: A place to write longer form notes and how-to's!
 url: "https://ukbaz.github.io/"
 markdown: kramdown
-github_ribbon: false
+github:
+  is_project_page: false
 
 plugins:
   - jekyll-relative-links

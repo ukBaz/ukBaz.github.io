@@ -1,4 +1,4 @@
-theme: jekyll-theme-architect
+theme: jekyll-theme-merlot
 title: ukBaz Notes
 description: A place to write longer form notes and how-to's!
 url: "https://ukbaz.github.io/"
@@ -10,11 +10,4 @@ relative_links:
   enabled: true
   collections: true
 include:
-  - CONTRIBUTING.md
-  - README.md
-  - LICENSE.md
-  - COPYING.md
-  - CODE_OF_CONDUCT.md
-  - CONTRIBUTING.md
-  - ISSUE_TEMPLATE.md
-  - PULL_REQUEST_TEMPLATE.md
+  - about.md

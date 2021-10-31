@@ -6,12 +6,14 @@
 
 ---
 ## Notes
-- [Capacitive Touch With micro:bit](./en/html/howto/microbit_touch/index.html)
-- [Liquid Level Sensing](./en/html/howto/microbit_level_sensor/index.html)
+- [Capacitive Touch With micro:bit](./howto/microbit_touch.md)
+- [Liquid Level Sensing](./howto/microbit_level_sensor.md)
 - [Using Python For Bluetooth](./howto/bluetooth_overview.md)
 - [micro:bit Radio Packets](./howto/ubit_radio.html)
 - [Using PyObject for D-Bus](./howto/python_gio.md)
 - [RGB Ratios in PiWars](./howto/RGB_ratios.html)
+
+
 ---
 
 &copy; Copyright 2021, Barry Byford.

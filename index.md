@@ -1,6 +1,4 @@
-# ukBaz Notes
 
----
 ## Workshops
  - [RPi <-> micro:bit Workshop](./howto/ubit_workshop.html)
 

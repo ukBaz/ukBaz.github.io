@@ -16,11 +16,10 @@ Daemon (`bluetoothd`) and the application you have written.
 An advantage of D-Bus is that most programming languages have bindings to it
 so the BlueZ APIs are language agnostic. D-Bus bindings require you to know
 four bits of information:
-1) Which bus (`system` or `session`) the service is on
-2) The `bus name` of the service
-3) The `object path` of the methods and properties
-4) The `interface` on that `object path`
-5) `method`, `property` or `signal` 
+1. Which bus (`system` or `session`) the service is on
+2. The `bus name` of the service
+3. The `object path` of the methods and properties
+4. The `interface` for the `method`, `property` or `signal` 
 
 This hierarchy of information builds to uniquely identify what is to be
 accessed with D-Bus.
@@ -127,11 +126,12 @@ org.freedesktop.DBus.Properties     interface -         -                       
 .PropertiesChanged                  signal    sa{sv}as  -                                        -
 ```
 There are a number that start with `org.bluez` which are documented at:
-https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc
+[https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc](https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc)
 
 Those that start with `org.freedesktop.DBus` are standard interfaces and are
 documented at: 
-https://dbus.freedesktop.org/doc/dbus-specification.html#standard-interfaces
+[https://dbus.freedesktop.org/doc/dbus-specification.html#standard-interfaces](https://dbus.freedesktop.org/doc/dbus-specification.html#standard-interfaces
+)
 
 ## D-Bus bindings for Python
 There are a number of libraries that can be used to access D-Bus from Python.

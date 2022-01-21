@@ -9,9 +9,10 @@
 - [Liquid Level Sensing](./howto/microbit_level_sensor.md)
 - [Using Python For Bluetooth](./howto/bluetooth_overview.md)
 - [micro:bit Radio Packets](./howto/ubit_radio.html)
-- [Using PyObject for D-Bus](./howto/python_gio.md)
+- [Creating a BlueZ Pairing Agent](./howto/bluez_pairing.md)
 - [RGB Ratios in PiWars](./howto/RGB_ratios.html)
 - [Python Powered Party Popper Puller](./howto/party_popper.html)
+- [Using PyObject for D-Bus](./howto/python_gio.md) - Underconstructiom
 
 ---
 ## GitHub Gists

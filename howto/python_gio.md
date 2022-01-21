@@ -93,7 +93,7 @@ org.bluez.Adapter1                  interface -         -                       
 .DiscoverableTimeout                property  u         190                                      emits-change writable
 .Discovering                        property  b         false                                    emits-change
 .Modalias                           property  s         "usb:v1D6Bp0246d0535"                    emits-change
-.Name                               property  s         "thinkabit1"                             emits-change
+.Name                               property  s         "LinuxMachine"                             emits-change
 .Pairable                           property  b         false                                    emits-change writable
 .PairableTimeout                    property  u         120                                      emits-change writable
 .Powered                            property  b         true                                     emits-change writable

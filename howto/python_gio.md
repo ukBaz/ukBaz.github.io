@@ -268,7 +268,7 @@ is the signature of the method.
 Most of the inputs are stings which is straightforward taking a Python `str`
 but in the case of the `Set` method we see that one of the parameters is of
 D-Bus type `v`. 
-This is `Variant` and we can create this using the `Glib` library.
+This is `Variant` and we can create this using the `GLib` library.
 
 An example to find all the properties on the Adapter interface, then
 turn the adapter off, and back on again:
@@ -320,11 +320,76 @@ False
 True
 ```
 
+## <a name="async"></a>Asynchronous Event Loop
+There is Bluetooth functionality that can be accessed synchronously such as
+setting up properties on the adapter, connecting to a BLE device and even
+reading a value from that device. There is other functionality that is designed
+to work asynchronously such as events when a new device is found during 
+scanning, a device connects, or a value on a device changes.
+
+The PyOBject library uses an event loop called MainLoop. 
+
+This will be the main loop in our program that typically waits for events
+to trigger a callback function.
+
+For example, let's implement the functionality to print out the time every
+five seconds until we do a keyboard interrupt (ctrl-c). Typically, we might
+do that with a while loop in Python:
+
+```python
+from datetime import datetime
+from time import sleep
+
+
+def show_time():
+    now = datetime.now().strftime('%M:%S')
+    print(f'Now: {now}')
+
+
+try:
+    while True:
+        show_time()
+        sleep(5)
+except KeyboardInterrupt:
+    print('exit')
+```
+To do this asynchronously we replace the while loop with the event loop.
+Then set an event to occur at regular (5 seconds in this example) intervals.
+We use the [timeout_add_seconds](https://lazka.github.io/pgi-docs/#GLib-2.0/functions.html#GLib.timeout_add_seconds)
+method to add an event every 5 senconds. This event is to repeatedly call 
+`show_time`. 
+While `show_time` returns `True` the event will continue to automatically 
+happen:
+
+```python
+from datetime import datetime
+from gi.repository import GLib
+
+
+def show_time():
+    now = datetime.now().strftime('%M:%S')
+    print(f'Now: {now}')
+    return True
+
+
+GLib.timeout_add_seconds(interval=5,
+                         function=show_time)
+
+mainloop = GLib.MainLoop()
+
+try:
+    mainloop.run()
+except KeyboardInterrupt:
+    print('exit')
+    mainloop.quit()
+```
+
 ---
 
 &copy; Copyright 2022, Barry Byford.
 
 first published: 2022 January 21
+
 last updated: 2022 January 22
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.

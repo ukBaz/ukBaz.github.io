@@ -2,11 +2,12 @@
 
 ## Overview
 If you want to do Bluetooth on Linux then BlueZ (the official Bluetooth stack
-on linux) is the best option. They have made a number of APIs available for
-people to interface with the functionality and write their applications. These
-APIs use D-Bus which is not widely known about so this article aims to give
-some background to help people get started with writing applications using
-BlueZ.
+on Linux) is the best option. They have made a number of APIs available for
+people to interface with their functionality enabling people to write
+their own applications. 
+These BlueZ APIs use D-Bus which is not widely known about so this article
+aims to give some background to help people get started with writing 
+applications using BlueZ's D-Bus APIs.
 
 ## D-Bus
 D-Bus allows communication between multiple processes running concurrently 
@@ -41,7 +42,8 @@ command line:
 ```shell
 $ busctl list
 ```
-In the list will be `org.bluez` and this is what is used for BlueZ information.
+In the list will be `org.bluez` and this is what is used for BlueZ 
+`bluetoothd` information.
 
 ### Object Path
 The `object path` looks like a filesystem path, but they are not, they are 
@@ -63,8 +65,10 @@ $ busctl tree org.bluez
 ```
 
 ### Interface
+Think of an interface as a named group of methods and signals. D-Bus identifies
+interfaces with a simple namespaced string.
 There may be a number of interfaces on an object path. For example on 
-`/org/bluez/hci0`
+`/org/bluez/hci0` there can be:
 
     org.bluez.Adapter1
     org.bluez.GattManager1
@@ -135,17 +139,17 @@ documented at:
 
 ## D-Bus bindings for Python
 There are a number of libraries that can be used to access D-Bus from Python.
-However they all seem to come with issues.
+However, they all seem to come with issues.
 
 The BlueZ examples use `python-dbus` which the library accepts there might
 be [issues](https://dbus.freedesktop.org/doc/dbus-python/). Else where it is
-documented that `dbus-python` is a legacy API, built with a deprecated 
+documented that `python-dbus` is a legacy API, built with a deprecated 
 dbus-glib library
 
 The newer D-Bus libraries are based on functionality in `PyGObject` which uses
 the D-Bus bindings in `gi.repsitory.Gio`.
-However, this library is not documented well and only minimal examples
-around.
+However, this library is not documented well and I have only found a few
+examples around.
 
 `pydbus` has been a strong contender as it works great for doing 
 BLE central devices, and it is built on `gi.repository.Gio`. However, 
@@ -155,11 +159,12 @@ it also has issues.
  - Updates seem to have stopped happening on `pydbus`
 
 Because of the issues stated above I've taken the decision to attempt to use
-`PyGObject` module for more of D-Bus work. Below is some of those learnings.
+`PyGObject` module for more of my D-Bus work. Below are some notes of my
+learnings from using it.
 
 ## Creating a proxy for a BlueZ object
-Object proxies are used as a way to pythonic method calls to invoke remote
-D-Bus methods.
+Object proxies are used as a way to create pythonic method calls to invoke
+remote D-Bus methods.
 
 As we have seen in the introspection above on the Bluetooth Adapter object,
 there is a method called `GetDiscoveryFilters`. Taking the four pieces of 
@@ -190,7 +195,7 @@ Which gives the output:
 ```python
 ['UUIDs', 'RSSI', 'Pathloss', 'Transport', 'DuplicateData', 'Discoverable']
 ```
-## Getting BlueZ Managed Objects
+## Discovering BlueZ Managed Objects
 There will be a requirement for you to find the D-Bus object path for a piece
 of Bluetooth information. For example, you may know the Bluetooth MAC address
 of the device you want to interact with but not what its D-Bus object path is.
@@ -233,19 +238,19 @@ For me that gave the output of:
 Device [E1:4B:6C:22:56:F0] on object path: /org/bluez/hci0/dev_E1_4B_6C_22_56_F0
 ```
 
-# Getting Properties
+## Getting Properties
 To interact with properties on an BlueZ interface we have to create a proxy
 for the D-Bus standard interface of `org.freedesktop.DBus.Properties`
-and use the `GetAll`, `Get` or `Set` methods giving them the BlueZ
-interface the property is on. The introspection above gives what the
-signature is of the methods
+and use the `GetAll`, `Get` or `Set` methods which take the BlueZ
+interface the property is on as input. The introspection above gives the
+following signatures for the methods:
 ```text
 NAME                                TYPE      SIGNATURE
 .GetAll                             method    s
 .Get                                method    ss
 .Set                                method    ssv
 ```
-The D-Bus tells
+The D-Bus documentation gives more information:
 ```text
     org.freedesktop.DBus.Properties.GetAll (in STRING interface_name,
                                           out ARRAY of DICT_ENTRY<STRING,VARIANT> props);
@@ -256,15 +261,17 @@ The D-Bus tells
                                        in STRING property_name,
                                        in VARIANT value);
 ```
-This is the first example where we have had inputs to our methods. `PyOBject`
-has the requirement that there is an extra input parameter. This extra 
-parameter goes first and is the signature of the method.
+This is the first example where we have had inputs to our proxy methods calls.
+`PyOBject` has the requirement that there is an extra input parameter which 
+is the signature of the method.
 
-In the case of the `Set` method we see that one of the parameters is of D-Bus
-type `v`. This is `Variant` and we can set this using the `Glib` library.
+Most of the inputs are stings which is straightforward taking a Python `str`
+but in the case of the `Set` method we see that one of the parameters is of
+D-Bus type `v`. 
+This is `Variant` and we can create this using the `Glib` library.
 
-An example to find all the properties on the Adapter interface and then
-turn the adapter off and back on again:
+An example to find all the properties on the Adapter interface, then
+turn the adapter off, and back on again:
 
 ```python
 from gi.repository import Gio, GLib
@@ -317,6 +324,7 @@ True
 
 &copy; Copyright 2022, Barry Byford.
 
-last updated: 2022 January 21
+first published: 2022 January 21
+last updated: 2022 January 22
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.

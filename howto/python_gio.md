@@ -383,6 +383,73 @@ except KeyboardInterrupt:
     print('exit')
     mainloop.quit()
 ```
+## <a name="properties_changed"></a>D-Bus Properties Changed
+As we can see above from the introspection of the adapter object path for the
+`org.bluez.Adapter1` interface, the flag `emits-change` is set for all the 
+properties. This means that if one or more of the properties change on the
+object, the`org.freedesktop.DBus.Properties.PropertiesChanged` signal will
+be emitted.
+The PyOBject library does some work to make this easier by presenting the
+[g-properties-changed](https://lazka.github.io/pgi-docs/Gio-2.0/classes/DBusProxy.html#Gio.DBusProxy.signals.g_properties_changed)
+signal on our proxy. 
+This signal corresponds to the`PropertiesChanged` D-Bus signal on the 
+`org.freedesktop.DBus.Properties` interface.
+
+This signal will happen when a property changes on interface. To use this
+signal we use the proxy's `connect` method to link it with a function.
+
+Below is an example of how this can be used. The example monitors the adapter
+object and prints out when the status of the `Powered` property changes.
+
+```python
+from gi.repository import Gio, GLib
+
+bus_type = Gio.BusType.SYSTEM
+bus_name = 'org.bluez'
+object_path = '/org/bluez/hci0'
+adapter_iface = 'org.bluez.Adapter1'
+
+
+def adapter_props_handler(proxy: Gio.DBusProxy,
+                          changed_props: GLib.Variant,
+                          invalidated_props: list) -> None:
+    props = changed_props.unpack()
+    powered = props.get('Powered')
+    if powered is True:
+        print('Adapter is now powered on')
+    elif powered is False:
+        print('Adapter is now powered off')
+
+
+adapter_proxy = Gio.DBusProxy.new_for_bus_sync(
+            bus_type=bus_type,
+            flags=Gio.DBusProxyFlags.NONE,
+            info=None,
+            name=bus_name,
+            object_path=object_path,
+            interface_name=adapter_iface,
+            cancellable=None)
+
+adapter_proxy.connect('g-properties-changed', adapter_props_handler)
+mainloop = GLib.MainLoop()
+
+try:
+    mainloop.run()
+except KeyboardInterrupt:
+    mainloop.quit()
+```
+This can be tested by, while the above Python script is running, using the
+following on the command line:
+```shell
+$ bluetoothctl power off
+$ bluetoothctl power on
+```
+The Python script should print:
+```text
+Adapter is now powered off
+Adapter is now powered on
+```
+
 
 ---
 

@@ -52,7 +52,7 @@ For example the default Bluetooth adapter on a Linux system is typically
 `/org/bluez/hci0`
 A list of all the objects being managed by BlueZ can be got on the command line
 with the following command:
-```shell
+```text
 $ busctl tree org.bluez
 └─/org
   └─/org/bluez
@@ -61,7 +61,6 @@ $ busctl tree org.bluez
         └─/org/bluez/hci0/dev_12_34_56_78_9A_BC/service000a
           └─/org/bluez/hci0/dev_12_34_56_78_9A_BC/service000a/char000b
             └─/org/bluez/hci0/dev_12_34_56_78_9A_BC/service000a/char000b/desc000d
-
 ```
 
 ### Interface
@@ -79,7 +78,7 @@ There may be a number of interfaces on an object path. For example on
     org.freedesktop.DBus.Properties
 
 We can find out what is on the object by introspection. Here is an example:
-```shell
+```text
 $ busctl introspect org.bluez /org/bluez/hci0
 NAME                                TYPE      SIGNATURE RESULT/VALUE                             FLAGS
 org.bluez.Adapter1                  interface -         -                                        -
@@ -142,7 +141,7 @@ There are a number of libraries that can be used to access D-Bus from Python.
 However, they all seem to come with issues.
 
 The BlueZ examples use `python-dbus` which the library accepts there might
-be [issues](https://dbus.freedesktop.org/doc/dbus-python/). Else where it is
+be [issues](https://dbus.freedesktop.org/doc/dbus-python/). It is
 documented that `python-dbus` is a legacy API, built with a deprecated 
 dbus-glib library
 
@@ -450,6 +449,113 @@ Adapter is now powered off
 Adapter is now powered on
 ```
 
+## Building a BLE Central
+The above is enough D-Bus to create Bluetooth Low Energy (BLE) device to take
+the Central role.
+It hasn't covered scanning for devices and pairing (if required) but as those
+are one-off provisioning steps they can be done with `bluetoothctl` on the 
+command line.
+
+The example below connects with a BBC micro:bit running its 
+[UART service](https://lancaster-university.github.io/microbit-docs/resources/bluetooth/bluetooth_profile.html)
+that has been configured to echo back any data that is sent to it.
+
+```python
+from time import sleep
+from datetime import datetime
+from gi.repository import Gio, GLib
+
+DEVICE_ADDR = 'E1:4B:6C:22:56:F0'  # micro:bit address
+UART_TX = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
+UART_RX = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
+
+# DBus Information
+bus_type = Gio.BusType.SYSTEM
+BLUEZ_NAME = 'org.bluez'
+ADAPTER_PATH = '/org/bluez/hci0'
+device_path = f"{ADAPTER_PATH}/dev_{DEVICE_ADDR.replace(':', '_')}"
+MNGR_IFACE = 'org.freedesktop.DBus.ObjectManager'
+PROP_IFACE = 'org.freedesktop.DBus.Properties'
+DEVICE_IFACE = 'org.bluez.Device1'
+BLE_CHRC_IFACE = 'org.bluez.GattCharacteristic1'
+
+
+def bluez_proxy(object_path, interface):
+    return Gio.DBusProxy.new_for_bus_sync(
+        bus_type=bus_type,
+        flags=Gio.DBusProxyFlags.NONE,
+        info=None,
+        name=BLUEZ_NAME,
+        object_path=object_path,
+        interface_name=interface,
+        cancellable=None)
+
+
+# setup dbus
+mngr = bluez_proxy('/', MNGR_IFACE)
+device = bluez_proxy(device_path, DEVICE_IFACE)
+dev_props = bluez_proxy(device_path, PROP_IFACE)
+
+# Connect to device
+device.Connect()
+
+# Wait for the cache of services on the remote device to be updated
+while not dev_props.Get('(ss)', DEVICE_IFACE, 'ServicesResolved'):
+    print(f"Services Resolved: {dev_props.Get('(ss)', DEVICE_IFACE, 'ServicesResolved')}")
+    sleep(0.5)
+print(f"Services Resolved: {dev_props.Get('(ss)', DEVICE_IFACE, 'ServicesResolved')}")
+
+
+def get_characteristic_path(dev_path, uuid):
+    """Look up DBus path for characteristic UUID"""
+    mng_objs = mngr.GetManagedObjects()
+    for path in mng_objs:
+        chr_uuid = mng_objs[path].get(BLE_CHRC_IFACE, {}).get('UUID')
+        if path.startswith(dev_path) and chr_uuid == uuid.casefold():
+            return path
+
+
+# Characteristic DBus information
+tx_path = get_characteristic_path(device_path, UART_TX)
+tx_proxy = bluez_proxy(tx_path, BLE_CHRC_IFACE)
+rx_path = get_characteristic_path(device_path, UART_RX)
+rx_proxy = bluez_proxy(rx_path, BLE_CHRC_IFACE)
+
+rx_proxy.WriteValue('(aya{sv})', b'Test#', {})
+
+
+def tx_handler(proxy: Gio.DBusProxy,
+                changed_props: GLib.Variant,
+                invalidated_props: list) -> None:
+    """Notify event handler for messages received from UART Service"""
+    props = changed_props.unpack()
+    value = props.get('Value')
+    if value:
+        text = bytes(value).strip()
+        print(f'Echo: {text}')
+
+
+def send_time():
+    """Send time over UART. `#` is the message termination character"""
+    now = datetime.now().strftime('%M:%S#')
+    print(f'Send: {now.encode()}')
+    rx_proxy.WriteValue('(aya{sv})', now.encode(), {})
+    return True
+
+
+# Enable eventloop for notifications
+mainloop = GLib.MainLoop()
+GLib.timeout_add_seconds(interval=9, function=send_time)
+tx_proxy.connect('g-properties-changed', tx_handler)
+tx_proxy.StartNotify()
+
+try:
+    mainloop.run()
+except KeyboardInterrupt:
+    mainloop.quit()
+    tx_proxy.StopNotify()
+    device.Disconnect()
+```
 
 ---
 
@@ -457,6 +563,6 @@ Adapter is now powered on
 
 first published: 2022 January 21
 
-last updated: 2022 January 22
+last updated: 2022 January 23
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.

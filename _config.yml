@@ -2,6 +2,7 @@ theme: jekyll-theme-slate
 title: ukBaz Notes
 description: A place to write longer form notes and how-to's!
 url: "https://ukbaz.github.io/"
+favicon: asset/favicon.ico
 markdown: kramdown
 github:
   is_project_page: false

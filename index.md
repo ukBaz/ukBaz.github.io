@@ -12,7 +12,7 @@
 - [Creating a BlueZ Pairing Agent](./howto/bluez_pairing.md)
 - [RGB Ratios in PiWars](./howto/RGB_ratios.html)
 - [Python Powered Party Popper Puller](./howto/party_popper.html)
-- [Using PyObject for D-Bus](./howto/python_gio.md) - Underconstructiom
+- [Using PyObject for D-Bus with BlueZ](./howto/python_gio.md)
 
 ---
 ## GitHub Gists

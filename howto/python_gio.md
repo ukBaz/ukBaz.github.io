@@ -1,6 +1,6 @@
 # D-Bus and Bluez
 
-## Overview
+## Introduction <a name="introduction"></a>
 If you want to do Bluetooth on Linux then BlueZ (the official Bluetooth stack
 on Linux) is the best option. They have made a number of APIs available for
 people to interface with their functionality enabling people to write
@@ -9,7 +9,23 @@ These BlueZ APIs use D-Bus which is not widely known about so this article
 aims to give some background to help people get started with writing 
 applications using BlueZ's D-Bus APIs.
 
-## D-Bus
+# Table of contents
+1. [Introduction](#introduction)
+2. [D-Bus](#dbus)
+    1. [Buses](#buses)
+    2. [Bus Name](#bus_name)
+    3. [Object Path](#object_path)
+    4. [Interface](#interface)
+3. [D-Bus Bindings For Python](#bindings)
+4. [Creating a proxy for a BlueZ object](#proxy)
+5. [Discovering BlueZ Managed Objects](#managed_objects)
+6. [Getting Properties](#properties)
+7. [Asynchronous Event Loop](#async)
+8. [D-Bus Properties Changed](#properties_changed)
+9. [Building a BLE Central](#ble_central)
+
+
+## D-Bus <a name="dbus"></a>
 D-Bus allows communication between multiple processes running concurrently 
 on the same machine. In the case of BlueZ this is between the Bluetooth
 Daemon (`bluetoothd`) and the application you have written.
@@ -29,14 +45,14 @@ accessed with D-Bus.
 
 Let's look at each of these in more detail.
 
-### Buses
+### Buses <a name="buses"></a>
 There are two buses:
  - a `session` bus for each user login session
  - a single `system` bus that provides access to system services
 
 For BlueZ and accessing `bluetoothd` we will always use the `system` bus
 
-### Bus Name
+### Bus Name <a name="bus_name"></a>
 To see all the `system` D-Bus names available on your machine run the following
 command line:
 ```shell
@@ -45,7 +61,7 @@ $ busctl list
 In the list will be `org.bluez` and this is what is used for BlueZ 
 `bluetoothd` information.
 
-### Object Path
+### Object Path <a name="object_path"></a>
 The `object path` looks like a filesystem path, but they are not, they are 
 identifiers of unique objects on the D-Bus.
 For example the default Bluetooth adapter on a Linux system is typically
@@ -63,7 +79,7 @@ $ busctl tree org.bluez
             └─/org/bluez/hci0/dev_12_34_56_78_9A_BC/service000a/char000b/desc000d
 ```
 
-### Interface
+### Interface <a name="interface"></a>
 Think of an interface as a named group of methods and signals. D-Bus identifies
 interfaces with a simple namespaced string.
 There may be a number of interfaces on an object path. For example on 
@@ -136,7 +152,7 @@ documented at:
 [https://dbus.freedesktop.org/doc/dbus-specification.html#standard-interfaces](https://dbus.freedesktop.org/doc/dbus-specification.html#standard-interfaces
 )
 
-## D-Bus bindings for Python
+## D-Bus bindings for Python <a name="bindings"></a>
 There are a number of libraries that can be used to access D-Bus from Python.
 However, they all seem to come with issues.
 
@@ -161,7 +177,7 @@ Because of the issues stated above I've taken the decision to attempt to use
 `PyGObject` module for more of my D-Bus work. Below are some notes of my
 learnings from using it.
 
-## Creating a proxy for a BlueZ object
+## Creating a proxy for a BlueZ object <a name="proxy"></a>
 Object proxies are used as a way to create pythonic method calls to invoke
 remote D-Bus methods.
 
@@ -194,7 +210,7 @@ Which gives the output:
 ```python
 ['UUIDs', 'RSSI', 'Pathloss', 'Transport', 'DuplicateData', 'Discoverable']
 ```
-## Discovering BlueZ Managed Objects
+## Discovering BlueZ Managed Objects <a name="interface"></a>
 There will be a requirement for you to find the D-Bus object path for a piece
 of Bluetooth information. For example, you may know the Bluetooth MAC address
 of the device you want to interact with but not what its D-Bus object path is.
@@ -237,7 +253,7 @@ For me that gave the output of:
 Device [E1:4B:6C:22:56:F0] on object path: /org/bluez/hci0/dev_E1_4B_6C_22_56_F0
 ```
 
-## Getting Properties
+## Getting Properties <a name="properties"></a>
 To interact with properties on an BlueZ interface we have to create a proxy
 for the D-Bus standard interface of `org.freedesktop.DBus.Properties`
 and use the `GetAll`, `Get` or `Set` methods which take the BlueZ
@@ -319,7 +335,7 @@ False
 True
 ```
 
-## <a name="async"></a>Asynchronous Event Loop
+## Asynchronous Event Loop <a name="async"></a>
 There is Bluetooth functionality that can be accessed synchronously such as
 setting up properties on the adapter, connecting to a BLE device and even
 reading a value from that device. There is other functionality that is designed
@@ -382,7 +398,7 @@ except KeyboardInterrupt:
     print('exit')
     mainloop.quit()
 ```
-## <a name="properties_changed"></a>D-Bus Properties Changed
+## D-Bus Properties Changed <a name="properties_changed"></a>
 As we can see above from the introspection of the adapter object path for the
 `org.bluez.Adapter1` interface, the flag `emits-change` is set for all the 
 properties. This means that if one or more of the properties change on the
@@ -449,7 +465,7 @@ Adapter is now powered off
 Adapter is now powered on
 ```
 
-## Building a BLE Central
+## Building a BLE Central <a name="ble_central"></a>
 The above is enough D-Bus to create Bluetooth Low Energy (BLE) device to take
 the Central role.
 It hasn't covered scanning for devices and pairing (if required) but as those

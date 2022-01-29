@@ -288,7 +288,7 @@ The D-Bus documentation gives more information:
                                        in VARIANT value);
 ```
 This is the first example where we have had inputs to our proxy methods calls.
-`PyOBject` has the requirement that there is an extra input parameter which 
+`PyGObject` has the requirement that there is an extra input parameter which 
 is the signature of the method.
 
 Most of the inputs are stings which is straightforward taking a Python `str`
@@ -354,7 +354,7 @@ reading a value from that device. There is other functionality that is designed
 to work asynchronously such as events when a new device is found during 
 scanning, a device connects, or a value on a device changes.
 
-The PyOBject library uses an event loop called MainLoop. 
+The PyGObject library uses an event loop called MainLoop. 
 
 This will be the main loop in our program that typically waits for events
 to trigger a callback function.
@@ -418,7 +418,7 @@ As we can see above from the introspection of the adapter object path for the
 properties. This means that if one or more of the properties change on the
 object, the`org.freedesktop.DBus.Properties.PropertiesChanged` signal will
 be emitted.
-The PyOBject library does some work to make this easier by presenting the
+The PyGObject library does some work to make this easier by presenting the
 [g-properties-changed](https://lazka.github.io/pgi-docs/Gio-2.0/classes/DBusProxy.html#Gio.DBusProxy.signals.g_properties_changed)
 signal on our proxy. 
 This signal corresponds to the`PropertiesChanged` D-Bus signal on the 

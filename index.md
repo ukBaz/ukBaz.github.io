@@ -1,3 +1,9 @@
+---
+title: ukBaz Notes 
+summary: Notes on doing stuff
+author:  uk_baz
+image: /asset/popper.jpg
+---
 
 ## Workshops
  - [RPi <-> micro:bit Workshop](./howto/ubit_workshop.html)

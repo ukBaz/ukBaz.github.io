@@ -18,8 +18,12 @@ image: asset/popper.jpg
 - [Creating a BlueZ Pairing Agent](./howto/bluez_pairing.md)
 - [RGB Ratios in PiWars](./howto/RGB_ratios.html)
 - [Python Powered Party Popper Puller](./howto/party_popper.html)
+
+---
+## PyGObject D-Bus For BlueZ
 - [Using PyObject for D-Bus with BlueZ](./howto/python_gio_1.md)
 - [BlueZ scanning for BLE Beacons](./howto/python_gio_2.md)
+- [Publishing BlueZ Interfaces](./howto/python_gio_3.md)
 
 ---
 ## GitHub Gists

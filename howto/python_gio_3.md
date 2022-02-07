@@ -13,7 +13,7 @@ new to the topic.
 
 BlueZ uses a technique where an interface is defined 
 (e.g. `org.bluez.LEAdvertisement1`) for the developer to create that interface
-and publish it to D-Bus. The location of that create interface implementation 
+and publish it to D-Bus. The location of that created interface implementation 
 is given to BlueZ using the relevant `Register*` command 
 (e.g. `RegisterAdvertisement` on the `org.bluez.LEAdvertisingManager1` 
 interface).
@@ -48,9 +48,9 @@ advertise). BlueZ is told where to find this interface implementation with the
 specific `Register*` command.
 
 
-## Is Writing D-Bus Service with PyGObject broken?
+## Is Writing a D-Bus Service with PyGObject broken?
 
-A reading of the documentation suggests the way to create a 
+One reading of the documentation suggests the way to create a 
 D-Bus service with PyGObject is with 
 [DBusInterfaceSkeleton](https://lazka.github.io/pgi-docs/Gio-2.0/classes/DBusInterfaceSkeleton.html)
 but after much experimentation I came to the same conclusion as outlined in the
@@ -70,19 +70,19 @@ and simpler to understand.
 In the example below `DbusService` is the class for handling the transfer
 between python methods & properties and published D-Bus methods & properties.
 For the purposes of keeping this blog shorter than it might otherwise be 
-I'm not going to explain the details here. The class will probably will 
+I'm not going to explain the details here. The class will probably 
 not work in all situations but for working with BlueZ it is good enough.
 
 `MyDBusService` is an example of a specific implementation of D-Bus service 
 that is to be published. 
 The `introspection_xml` contains the D-Bus introspection information.
-The node information is built from this xml data using 
+The node information is built from this XML data using 
 [DBusNodeInfo.new_for_xml](https://lazka.github.io/pgi-docs/index.html#Gio-2.0/classes/DBusNodeInfo.html#Gio.DBusNodeInfo.new_for_xml)
 The methods and properties specified match a Python method and 
 property created in this class.
 The  XML 
 [introspection format](https://dbus.freedesktop.org/doc/dbus-specification.html#introspection-format)
-is described in the D-Bus specification
+is described in the D-Bus specification.
 
 `DbusService` is doing the majority of the heavy lifting while `MyDBusService`
 focuses on the service to be published.
@@ -221,8 +221,8 @@ class MyDBusService(DbusService):
 
     def __init__(self):
         self.path = '/org/ukbaz/fibonacci0001'
-        super().__init__(self.introspection_xml, self.path, 'org.ukbaz')
-
+        super().__init__(self.introspection_xml, self.path,
+                         own_name='org.ukbaz', sys_bus=False)
         self.limit = 94
 
     def Fibonacci(self, position):
@@ -262,14 +262,14 @@ t 94
 This experiment has used the `session` (or `user`) bus to simplify the 
 security setup to specify name of our service.
 
-For BlueZ we have to use the `system` bus. Because we are creating the 
+For BlueZ we have to use the `system` bus. When creating the 
 service and registering it with BlueZ we do not need to give it a nice
-human-readable name.
+human-readable name. Not owning the name will also require less security setup.
 
-## Building An Bluetooth Advertisement
+## Building A Bluetooth Advertisement
 
 To create an advertisement in BlueZ with the D-Bus API there are two things 
-that need to happen. The first is that a D-Bus service with the interface
+that need to happen. The first is to create a D-Bus service with the interface
 `org.bluez.LEAdvertisement1` and the second is to tell BlueZ where that service
 is with `RegisterAdvertisement`.
 
@@ -302,7 +302,7 @@ a separate file, doc string, or a variable. It needs to be accessible to read.
 ### BlueZ Advertisement example
 
 Below is an example of creating an Eddystone URL beacon. This is a lot longer
-than the previous example. That main increase in length and complexity
+than the previous example. That increase in length and complexity
 is from manipulating data between Python and D-Bus
 
 ```python
@@ -655,12 +655,15 @@ if __name__ == '__main__':
 
 Because of the complexity of the data structures it is not uncommon for
 BlueZ to throw and error saying in cannot parse the advertisement data.
+
 A practical way to debug this is remove the `RegisterAdvertisement` step
 and access the service that has been published.
-This can be done on the command line using `busctl list` to see the new 
-service that has successfully been published to the system D-Bus.
+
+Accessing the service can be done on the command line using `busctl list` 
+to see the new service that has successfully been published to the system D-Bus.
 If this is a long list then using `busctl list | grep python` will help
 reduce the list.
+
 The published service will have a unique name (i.e. :x.xxx) that is not
 very human-readable. This is done to allow the creation of the service 
 without having to change security settings on the system bus. 
@@ -673,6 +676,6 @@ with the service you created and published.
 
 first published: 2022 February 6
 
-last updated: 2022 February 6
+last updated: 2022 February 7
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.

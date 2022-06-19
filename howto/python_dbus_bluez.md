@@ -179,7 +179,7 @@ In python conversion to a single variable can be done with the
 `int` or `struct` library. 
 
 > **_NOTE:_** Bluetooth data is normally (always?) is `little-endian` format.
-> 
+
 ```python
 data = b'\x7e\x00'
 value, = struct.unpack("<H", data)

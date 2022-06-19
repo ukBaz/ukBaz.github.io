@@ -25,8 +25,10 @@ image: asset/popper.jpg
 - [BlueZ scanning for BLE Beacons](./howto/python_gio_2.md)
 - [Publishing BlueZ Interfaces](./howto/python_gio_3.md)
 
+---
 ## dbus-python D-Bus for BlueZ
 - [Creating central client](./howto/python_dbus_bluez.md)
+
 ---
 ## GitHub Gists
 - [Python BLE central](https://gist.github.com/ukBaz/0294521185af72c53f75903fbfb0adb5#file-pydbus_read_write-py)

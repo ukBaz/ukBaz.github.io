@@ -18,6 +18,7 @@ image: asset/popper.jpg
 - [Creating a BlueZ Pairing Agent](./howto/bluez_pairing.md)
 - [RGB Ratios in PiWars](./howto/RGB_ratios.html)
 - [Python Powered Party Popper Puller](./howto/party_popper.html)
+- [BLE Big Buttons](./howto/proj_big_btn.html)
 
 ---
 ## PyGObject D-Bus For BlueZ
@@ -40,6 +41,6 @@ image: asset/popper.jpg
 
 &copy; Copyright 2022, Barry Byford.
 
-last updated: 2022 January 29
+last updated: 2022 August 5
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
